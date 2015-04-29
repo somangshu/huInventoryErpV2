@@ -1,7 +1,10 @@
 <?php 
 	$this->load->view('common/menu'); 
+	if(isset($post))
+	{
+		var_dump($post);
+	}
 ?>
-<!DOCTYPE html>
 <html lang="en">
 <head>
 	<title>
@@ -23,6 +26,48 @@
 			<i class="mdi-content-create"></i>Search
 			<hr>
 			<div class="form-group">
+				Category Tags:<br /> 
+				<select id="categories" name="categories[]" multiple="multiple" onchange="updatesubcat();">
+                    <?php
+                        foreach($array["hum_menu_list"] as $category)
+                            {
+                                $value = strtolower($category['name']);
+                                $value = str_replace(' ','_',$value);
+                                
+                                if(in_array($value, $post['categories']))
+                                	echo '<option value="'.$value.'" selected="selected">'.$category['name'].'</option>';
+                                else
+                                	echo '<option value="'.$value.'">'.$category['name'].'</option>';
+                             } 
+                    ?>
+                </select>
+                <br />Sub-Category Tags:<br /> 
+                <div id="subs">
+                	<select id="subcategories" name="subcategories[]" multiple="multiple">
+                    <?php
+                        	foreach($array["hum_menu_list"] as $category)
+                            {
+                                $value = strtolower($category['name']);
+                                $value = str_replace(' ','_',$value);
+                                
+                                if(in_array($value, $post['categories']) && isset($category['subcategories']))
+                                {
+                                	foreach($category['subcategories'] as $subcategory)
+                                	{
+                                		$subvalue = strtolower($subcategory['name']);
+                                		$subvalue = str_replace(' ','_',$subvalue);
+                                		
+                                		if(in_array($subvalue, $post['subcategories']))
+                                			echo '<option value="'.$subvalue.'" selected="selected">'.$subcategory['name'].'</option>';
+                                		else
+                                			echo '<option value="'.$subvalue.'">'.$subcategory['name'].'</option>';
+                             		}
+                             	}
+                            }
+                            
+                    ?>
+                </select>
+                </div>
 	              <div class="form-control-wrapper">
 	              	<b>#</b><input class="form-control empty" type="text" name="tag" id="tag" value="<?php echo $post['tag']; ?>">
 	            </div>

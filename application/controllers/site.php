@@ -351,8 +351,12 @@ class site extends CI_Controller
 		$data['imagedata']['page'] = $page;
 		$data['url'] = 'getimages';
 		$data['post'] = $post;
+		
 		$data['flag'] = 1;
 		$data['search'] = 1;
+
+		$data['json'] = $this->letsjson();
+		$data['array'] = $this->letsarray();
 		if($data['imagedata'] != 'false')
 			$this->load->view("/images", $data);
 		else
