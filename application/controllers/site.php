@@ -288,7 +288,7 @@ class site extends CI_Controller
 				
 				if(!$result)
 				{
-					print_r("Error in insert to db.");
+					print_r("Updation complete");
 				 	die();
 				}
 				
@@ -430,7 +430,100 @@ class site extends CI_Controller
 		$data['temp3'] = $_POST['consumertypetags'];
 		$data['temp4'] = $_POST['manualtags'];
 		$data['id'] = $_POST['imageid'];
+		$data['url'] = $_POST['imageurl'];
+		$data['status'] = $_POST['status'];
 
 		$data['info'] = $this->enterprisesmodel->updatethisimage($data);
 	}
+
+	public function makemenu()
+	{
+		$this->load->model("enterprisesmodel");
+		$this->load->library('session');
+		$sessionUserData = $this->session->all_userdata();
+		$data['sessionUserData']=$sessionUserData;
+		$menuPanelsArray=$this->enterprisesmodel->getAllPanelsByRole($sessionUserData['user_role_id']);
+
+		$stack = array();
+		$menu = array();
+		$tos = -1;
+		$stack[++$tos] = "0";
+		$count = 0;
+
+		$outer = 0;
+		$inner = 0;
+		$level = 0;
+
+		while($count != count($menuPanelsArray)-1)
+		{	
+			$flag = 0;
+			for ($i=0; $i <= count($menuPanelsArray) - 1; $i++)
+			{     					  	
+				if ($menuPanelsArray[$i]['panel_parent_id'] != $stack[$tos])
+					continue;
+			  	else 
+              	{
+              		$level++;
+              		$stack[++$tos] = $menuPanelsArray[$i]['panel_id'];
+              		$menuPanelsArray[$i]['panel_parent_id'] = -1;
+              		$flag = 1;
+              		$count++;	
+              		$temp[$outer][$inner++] = $menuPanelsArray[$i]['panel_name'].','.$menuPanelsArray[$i]['panel_url'];
+              		break;	
+              	}
+			}
+			if(!$flag)
+			{
+				$level--;
+             	--$tos;
+             	
+             	if($level == 0)
+             	{
+             		++$outer;
+             		$inner = 0;
+             	}
+            }
+        }
+        $topmenu = array();
+        $menu = array();
+        $submenu = array();
+        $i = -1;
+        foreach($temp as $category)
+        {
+        	$flag = 1;
+        	$j = 0;
+        	foreach($category as $level)
+        	{
+        		if($flag)
+        		{
+        			$menu = $level;
+        			$flag = 0;
+        		}
+        		else
+        			$submenu[$j++] = $level;
+        	}
+        	$topmenu[++$i]['menu'] = $menu;
+        	$topmenu[$i]['submenu'] = $submenu;
+        }
+        print_r($topmenu);
+        $json = json_encode($topmenu);
+        print_r($json);
+    }
+
+    public function deleteimages($url)
+    {
+    	$this->load->model("enterprisesmodel");
+
+    	$imageid = array();
+    	$count = 0;
+    	foreach($_POST as $image)
+    		$imageid[$count++] = $image;
+
+    	$this->enterprisesmodel->deleteimages($imageid);
+
+    	if($url == "displayimages")
+    		$this->displayimages(1);
+    	else
+    		$this->$url;
+    }
 }

@@ -7,6 +7,7 @@ function validateLogin()
     
     var atpos = username.indexOf("@");
     var dotpos = username.lastIndexOf(".");
+    
     if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= username.length) 
     {
         alert("Not a valid e-mail address");
@@ -395,7 +396,7 @@ function openDepartment()
 	     { 
 	    	 try
 	    	 {
-	    		 alert(responseText);
+	    		
 	    	 }
 	    	 catch(e)
 	    	 {
@@ -419,7 +420,7 @@ function openDepartment()
 	     { 
 	    	 try
 	    	 {
-	    	 	alert(responseText);
+	    	 	
 	       	 }
 	    	 catch(e)
 	    	 {
@@ -482,7 +483,7 @@ function updatepanel()
    	     { 
    	    	 try
    	    	 {
-   	    		 alert(responseText);
+   	    	
    	    	 }
    	    	 catch(e)
    	    	 {
@@ -598,7 +599,6 @@ function updaterole()
        		alert("Please select a role.");
        		return false;
        	}
-       	alert(tag);
         document.forms['gettagform'].action='/updateimagesfromtag';
    		document.forms['gettagform'].submit();
    }
@@ -623,8 +623,6 @@ function updaterole()
    	 	for(i=0; i<length; i++)
    	 		if(subcategories[i].selected)
    	 			subcategorietags += subcategories[i].text + ', ';
-
-   	 	alert(subcategorietags);
 
 		document.forms['searchform'].action='/getimages/1';
    		document.forms['searchform'].submit();
@@ -655,15 +653,6 @@ function updaterole()
    		
    	 	var str = [];
    	 	temp ='<select id="subcategories" name="subcategories[]" multiple="multiple">';
-   	 	//temp = "";
-   	 	//pickme=document.getElementById('pickme');
-   	 	//children = pickme.childNodes;
-   	 	//for(i=0;i<children.length;i++)
-   	 	//{
-   	 		//alert(children[i].nodeName);
-   	 		//if(children[i].nodeName == 'multiselect-container dropdown-menu')
-
-   	 	//}
    	 	inner = -1;
    	 	subcategories=document.getElementById('subs');
    	 	for(i=0; i<length; i++)
@@ -692,21 +681,30 @@ function updaterole()
 
    function updatethisimage()
    {
+   		imageurl = document.getElementById('imageurl').value;
+
+   		var status = 'inactive';
+		if(document.getElementById("optionsRadios1").checked)
+			status = 'active';
+
    		imageid=document.getElementById('imageid').value;
    		length=document.getElementById('categories').length;
    	 	categories=document.getElementById('categories');
    	 	categorietags = "";
    	 	for(i=0; i<length; i++)
    	 		if(categories[i].selected)
-   	 			categorietags += categories[i].text + ', ';
+   	 			categorietags += categories[i].value + ', ';
 
-   	 	length=document.getElementById('subcategories').length;
-   	 	subcategories=document.getElementById('subcategories');
    	 	subcategorietags = "";
-   	 	for(i=0; i<length; i++)
-   	 		if(subcategories[i].selected)
-   	 			subcategorietags += subcategories[i].text + ', ';
-
+   	 	if(document.getElementById('subcategories'))
+   	 	{
+		 	length=document.getElementById('subcategories').length;
+		 	subcategories=document.getElementById('subcategories');
+		 	subcategorietags = "";
+		 	for(i=0; i<length; i++)
+		 		if(subcategories[i].selected)
+		 			subcategorietags += subcategories[i].value + ', ';
+   	 	}
    	 	length=document.getElementById('consumertype').length;
    	 	consumertype=document.getElementById('consumertype');
    	 	consumertypetags = "";
@@ -716,7 +714,7 @@ function updaterole()
 
    		manualtags = document.getElementById('manualtags').value;
 
-   		var datastring = 'imageid='+imageid+'&categorytags='+categorietags+'&subcategorytags='+subcategorietags+'&consumertypetags='+consumertypetags+'&manualtags='+manualtags;
+   		var datastring = 'status='+status+'&imageurl='+imageurl+'&imageid='+imageid+'&categorytags='+categorietags+'&subcategorytags='+subcategorietags+'&consumertypetags='+consumertypetags+'&manualtags='+manualtags;
       	var url = '/updatethisimage';
       	$.ajax({ 
 	     type   : "POST", 
@@ -724,6 +722,14 @@ function updaterole()
 	     data   : datastring,   
 	     success: function(responseText)
 	     {
-
+	     	alert(responseText);
 	     }});
+   }
+
+   function deleteimages()
+   {
+   		url = document.getElementById('url').value;
+   		
+   		document.forms['deleteimageform'].action='/deleteimages/'+url;
+   		document.forms['deleteimageform'].submit();
    }

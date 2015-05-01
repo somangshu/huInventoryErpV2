@@ -554,18 +554,6 @@ public function deleteUser($user_id)
 	}
 }
 
-public function updatePermissions($post)
-{
-	$dbHandle = $this->init();
-	//error_log("post arrif(!isset($perms)) {
-	$perms=$post['permission'];
-	$perms=implode(",", $perms);
-	//error_log("permissions ".print_r($perms, true));
-	$query = "update ck_user_tbl set user_permissions='$perms' where user_id='".$post['username']."'";
-	//error_log("query ".$query);
-	$result = $dbHandle->query($query);
-}
-
 public function getAllPanelInformation($panelid)
 {
 	$row = array();
@@ -675,8 +663,8 @@ public function deleterole($roleid)
     public function getAllImages()
     {
 		$dbHandle = $this->init();
-    	
-    	$query = "SELECT imageurl, imageid FROM insta_images WHERE 1 ORDER BY imageid DESC";
+   
+    	$query = "SELECT imageurl, imageid FROM insta_images, statustable WHERE insta_images.imageid = statustable.imageid AND statustable.status = 'active' ORDER BY imageid DESC";
 		$result = mysql_query($query);
 		
 		$imageurls = array();
@@ -744,26 +732,45 @@ public function deleterole($roleid)
 		$source = $post['source'];
 		$date = $post['date'];
 
-		$query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT insta_images.imageurl, insta_images.imageid FROM insta_images, tags WHERE insta_images.imageid = tags.imageid AND ";
+		$tags = array();
+		$count = 0;
+
+		$query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT insta_images.imageurl, insta_images.imageid FROM insta_images, manualcategorytags, statustable WHERE insta_images.imageid = manualcategorytags.imageid AND insta_images.imageid = statustable.imageid AND ";
+   		while(isset($post['categories'][$i]))
+   			$tags[$count++] = $post['categories'][$i++];
+   			
+   		$i=0;
+   		while(isset($post['subcategories'][$i]))
+   			$tags[$count++] = $post['subcategories'][$i++];
+   			
    		if($tag != '')
-   			$query .= "tags.tag = '".$tag."' AND ";
+   			$tags[$count++] = $tag;
+   		
+   		$tagstring = implode("','", $tags);
+   		$query .= "manualcategorytags.tag IN ('".$tagstring."') AND ";
+   		
    		if($source != 'None')
    			$query .= "insta_images.source = '".$source."' AND ";
+   		
    		if($date != '')
    			$query .= "DATE(insta_images.createdat) = '".$date."' AND ";
    		
    		$sub = substr($query, 0, strlen($query)-5);
-		$sub .= "ORDER BY imageid DESC LIMIT ".$start_from.", 20;";
-
+		$sub .= " ORDER BY imageid DESC LIMIT ".$start_from.", 20;";
+		
     	$result = mysql_query($sub);
 
+    	$i=0;
+    	$imageids = array();
 		while($row = mysql_fetch_assoc($result))
     	{
     		$image = $row['imageurl'];
+    		$imageids[$i] = $row['imageid'];
     		$imageurl[$i] = '<a href="/imageinfo/'.$row['imageid'].'"><img src="'.$image.'" alt="WTF" style="width:320px;height:320px"></a>';
     		$i++;
     	}
     	$data['url'] = $imageurl;
+    	$data['imageid'] = $imageids;
     	
     	
     	if($result)
@@ -790,17 +797,19 @@ public function deleterole($roleid)
 
     	$start_from = ($page-1) * 20; 
 
-    	$query = "SELECT imageurl, imageid FROM insta_images ORDER BY imageid DESC LIMIT ".$start_from.", 20"; 
-    	$result = mysql_query ($query); 
-    	
+    	$query = "SELECT imageurl, insta.imageid FROM insta_images insta, statustable WHERE insta.imageid = statustable.imageid AND statustable.status LIKE 'active' ORDER BY insta.imageid DESC LIMIT ".$start_from.", 20"; 
+    	$result = mysql_query($query);
+
 		$imageurl = array();
 
     	while ($row = mysql_fetch_assoc($result))
     	{
     		$image = $row['imageurl'];
+    		$imageids[$i] = $row['imageid'];
 			$imageurl[$i++] =  '<a href="/imageinfo/'.$row['imageid'].'"><img src="'.$image.'" alt="WTF" style="width:320px;height:320px"></a>';
 		}
 		$data['url'] = $imageurl;
+		$data['imageid'] = $imageids;
 
     	$query = "SELECT COUNT(imageid) FROM insta_images"; 
     	$result = mysql_query($query); 
@@ -896,41 +905,118 @@ public function deleterole($roleid)
 		$manualtags = explode(';', $data['temp4']);
 
 		$imageid = $data['id'];
+		$url = $data['url'];
+		$status = $data['status'];
+		$parent_id;
+		
+		$flag = 1;
+		foreach($consumertypetags as $type)
+    	{
+    		if($type != "")
+    		{
+    			$query = 'DELETE FROM consumertype WHERE imageid = '.$imageid.'AND type LIKE "'.$type.'";';	
+	    		$result = mysql_query($query);
+	    		
+    			$query = 'SELECT DISTINCT COUNT(`imageid`) FROM consumertype WHERE type LIKE "'.$type.'";';
+    			$result = mysql_query($query);
+			    $row = mysql_fetch_assoc($result);
+			    $count = $row["COUNT(`imageid`)"];
+			    if($count < 50)
+			    {
+    				$query = "INSERT INTO consumertype (imageid, type) VALUES (".$imageid." ,'".$type."');";
+	    			$result = mysql_query($query);
+	    		}
+	    		else
+	    		{
+	    			var_dump('Oh fuck internal table.');
+	    		}
 
+				$query = 'SELECT DISTINCT COUNT(`id`) FROM magento_consumer_type_mapping WHERE consumer_type LIKE "'.$type.'";';
+    			$result = mysql_query($query);
+			    $row = mysql_fetch_assoc($result);
+			    $count = $row["COUNT(`id`)"];
+			    if($count < 50)
+			    {
+			    	if($flag)
+			    	{
+				    	$query = "INSERT INTO magento_main_table (image_url, status) VALUES ('".$url."' ,'".$status."');";
+		    			$result = mysql_query($query);
+		    			
+				    	$query = 'SELECT id FROM magento_main_table WHERE image_url LIKE "'.$url.'"';
+				    	$result = mysql_query($query);
+						$row = mysql_fetch_assoc($result);
+						$parent_id = $row['id'];
+
+						$flag = 0;
+					}
+					
+					$query = 'DELETE FROM magento_consumer_type_mapping WHERE parent_id = '.$parent_id.' AND consumer_type LIKE "'.$type.'";';
+					$result = mysql_query($query);
+
+    				$query = "INSERT INTO magento_consumer_type_mapping (parent_id, consumer_type) VALUES (".$parent_id." ,'".$type."');";
+	    			$result = mysql_query($query);
+	    		}
+	    		else
+	    		{
+	    			var_dump('Oh fuck magento table.');
+	    		}
+    		}
+    	}
+	   
 		foreach($categorytags as $tag)
     	{
     		if($tag != "")
     		{
-    			$query = "INSERT INTO manualcategorytags (imageid, tag) VALUES (".$imageid." ,'".$tag."')";
-    			//echo $query;
-    			$result = mysql_query($query);
-    			echo $result;
+    			$query = "INSERT INTO manualcategorytags (imageid, tag) VALUES (".$imageid." ,'".$tag."');";
+	    		$result = mysql_query($query);
+
+	    		$query = "INSERT INTO magento_insta_product_tags (parent_id, catalog_tag) VALUES (".$parent_id." ,'".$tag."');";
+	    		$result = mysql_query($query);
     		}
     	}
+
     	foreach($subcategorytags as $tag)
     	{
     		if($tag != "")
     		{
-    			$query = "INSERT INTO manualcategorytags (imageid, tag) VALUES (".$imageid." ,'".$tag."')";
-    			//echo $query;
-    			$result = mysql_query($query);
-    			echo $result;
+    			$query = "INSERT INTO manualcategorytags (imageid, tag) VALUES (".$imageid." ,'".$tag."');";
+	    		$result = mysql_query($query);
+
+	    		$query = "INSERT INTO magento_insta_product_tags (parent_id, catalog_tag) VALUES (".$parent_id." ,'".$tag."');";
+	    		$result = mysql_query($query);
     		}
     	}
+    	
     	foreach($manualtags as $tag)
     	{
     		if($tag != "")
     		{
-    			$query = "INSERT INTO manualcategorytags (imageid, tag) VALUES (".$imageid." ,'".$tag."')";
-    			//echo $query;
-    			$result = mysql_query($query);
-    			echo $result;
+    			$query = "INSERT INTO manualcategorytags (imageid, tag) VALUES (".$imageid." ,'".$tag."');";
+	    		$result = mysql_query($query);
+
+	    		$query = "INSERT INTO magento_insta_product_tags (parent_id, catalog_tag) VALUES (".$parent_id." ,'".$tag."');";
+	    		$result = mysql_query($query);
     		}
     	}
-    	foreach($consumertypetags as $tag)
+
+    	$query = 'UPDATE statustable SET status = "'.$status.'" WHERE imageid = '.$imageid; 
+		$result = mysql_query($query);
+
+
+     	$query = 'UPDATE magento_main_table SET status = "'.$status.'" WHERE image_url = "'.$url.'"'; 
+		$result = mysql_query($query);
+
+		echo 'Updated!';
+    }
+
+    public function deleteimages($imageid)
+    {
+    	$dbHandle = $this->init();
+
+    	foreach($imageid as $image)
     	{
-    		$query = "INSERT INTO consumertype (imageid, type) VALUES (".$imageid." ,'".$tag."')";
-    		$result = mysql_query($query);
+    		$query = 'UPDATE statustable SET status = "inactive" WHERE imageid = '.$image; 
+     		$result = $dbHandle->query($query);
     	}
     }
 }//EOF

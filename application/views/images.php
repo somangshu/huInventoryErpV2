@@ -1,9 +1,7 @@
 <?php 
-	$this->load->view('common/menu'); 
-	if(isset($post))
+	$this->load->view('common/menu');
+	if(isset($url))
 	{
-		var_dump($post);
-	}
 ?>
 <html lang="en">
 <head>
@@ -12,8 +10,10 @@
 	</title>
 </head>
 <body>
+	<input type="hidden" name="url" id="url" value="<?php echo $url; ?>">
+	<?php } ?>
 	<input type="hidden" id="json" name="json" value='<?php echo $json; ?>'>
-	<?php 
+	<?php
 	if($search && $flag)
 	{
 ?>
@@ -189,28 +189,29 @@
 if($flag)
 {
 ?>	
-
-<form class="form-horizontal" name="infoform" id="infoform" onsubmit="return getinfo()" method="post">
+<form class="form-horizontal" name="deleteimageform" id="deleteimageform" onsubmit="return false" method="post">
 <div id="container">	
+	<div class="col-sm-12">
 <?php 
 	for($i=0;$i<count($imagedata['url']);$i++)
+	{
+?>
+
+		<div class="col-sm-3">
+		<div class="checkbox">
+            <label>
+                <input type="checkbox" id="checkbox<?php echo $i; ?>" name="checkbox<?php echo $i; ?>" value='<?php echo $imagedata["imageid"][$i]; ?>'> Delete
+            </label>
+        </div>
+		<?php
 		echo $imagedata['url'][$i];
-
-	echo '<h3><pre><a href="javascript: getinfo(\''.$url.'\', 1);">          First Page          </a>';
-	echo '<a href="javascript: getinfo(\''.$url.'\', '.$imagedata['totalpages'].');">          Last Page          </a>';
-	echo '<br />';
-	echo '<br />';
-	if($imagedata['page'] != 1)
-	{
-		$back = $imagedata['page'] - 1;
-		echo '<a href="javascript: getinfo(\''.$url.'\', '.$back.');">               Back          </a>';
+		?>
+	</div>
+	<?php
 	}
-	if($imagedata['page'] != $imagedata['totalpages'])
-	{
-		$next = $imagedata['page'] + 1;
-		echo '<a href="javascript: getinfo(\''.$url.'\', '.$next.');">          Next          </a>('.$imagedata['page'].' of '.$imagedata['totalpages'].' pages)</pre></h3>';
-	}
-
+	echo '</form>';
+	echo '<input type="button" id="sub" class="btn btn-primary" onclick="return deleteimages()" value="Delete Images" style="width:100%">';
+	echo '<form class="form-horizontal" name="infoform" id="infoform" onsubmit="return getinfo()" method="post">';
 	if($url == 'getimages')
 	{
 		$cat = 0;
@@ -226,7 +227,6 @@ if($flag)
 			$subcat = 1;
 		}
 ?>		
-	<!-- <form class="form-horizontal" name="infoform" id="infoform" onsubmit="return getinfo()" method="post"> -->
 		<input type='hidden' name='tag' id='tag' value="<?php echo $post['tag'];?>">
 		<input type='hidden' name='source' id='source' value="<?php echo $post['source'];?>">
 		<input type='hidden' name='date' id='date' value="<?php echo $post['date'];?>">
@@ -235,9 +235,31 @@ if($flag)
 			echo '<input type="hidden" name="categories" id="categories" value="<?php echo $categories;?>">';
 		if($subcat)
 			echo '<input type="hidden" name="subcategories" id="subcategories" value="<?php echo $subcategories;?>">';
+		if($url)
+			echo '<input type="hidden" name="url" id="url" value="'.$url.'">';
+
 	}
 }
 ?>
+</div>
+<div class="col-sm-12">
+<?php
+	echo '<h3><pre><a href="javascript: getinfo(\''.$url.'\', 1);">          First Page          </a>';
+	echo '<a href="javascript: getinfo(\''.$url.'\', '.$imagedata['totalpages'].');">          Last Page          </a>';
+	echo '<br />';
+	echo '<br />';
+	if($imagedata['page'] != 1)
+	{
+		$back = $imagedata['page'] - 1;
+		echo '<a href="javascript: getinfo(\''.$url.'\', '.$back.');">               Back          </a>';
+	}
+	if($imagedata['page'] != $imagedata['totalpages'])
+	{
+		$next = $imagedata['page'] + 1;
+		echo '<a href="javascript: getinfo(\''.$url.'\', '.$next.');">          Next          </a>('.$imagedata['page'].' of '.$imagedata['totalpages'].' pages)</pre></h3>';
+	}
+?>
+</div>
 </div>
 </form>
 </body>
