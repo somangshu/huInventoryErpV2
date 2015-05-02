@@ -2,728 +2,760 @@ function validateLogin()
 {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
-    var datastring = 'username='+username+'&password='+password;
+    var datastring = 'username=' + username + '&password=' + password;
     var url = '/validateLogin';
-    
+
     var atpos = username.indexOf("@");
     var dotpos = username.lastIndexOf(".");
-    if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= username.length) 
+    if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= username.length)
     {
-        alert("Not a valid e-mail address");
+        $('.signup-character-face-oops').css('display', 'block');
+        $('.signup-character-face-happy').css('display', 'none');
         return false;
     }
-    
-    
-    document.forms['loginform'].action='/validateLogin';
+
+
+    document.forms['loginform'].action = '/validateLogin';
     document.forms['loginform'].submit();
 }
 
 function adduser()
 {
-	var username = document.getElementById("username").value;
+    var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
     var name = document.getElementById("name").value;
     var index = document.getElementById("role");
     var role = index.options[index.selectedIndex].text;
-   
-    if(username == '' || password == '' || name == '')
+
+    if (username == '' || password == '' || name == '')
     {
-    	alert("One of the fields in empty.");
-    	return false;
+        alert("One of the fields in empty.");
+        return false;
     }
-    
+
     var atpos = username.indexOf("@");
     var dotpos = username.lastIndexOf(".");
-    
-    if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= username.length) 
+
+    if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= username.length)
     {
         alert("Not a valid e-mail address");
         return false;
     }
-    
+
     alert("validation successful.");
-    
+
     //add ajax here
-    document.forms['adduserform'].action='/addeduser';
+    document.forms['adduserform'].action = '/addeduser';
     document.forms['adduserform'].submit();
 }
 
 function deleteuser()
 {
-	var username = document.getElementById("username").value;
-	
-	if(username == '')
+    var username = document.getElementById("username").value;
+
+    if (username == '')
     {
-    	alert("Username cannot be empty.");
-    	return false;
+        alert("Username cannot be empty.");
+        return false;
     }
-	
-	document.forms['deleteuserform'].action='/deleteuser';
+
+    document.forms['deleteuserform'].action = '/deleteuser';
     document.forms['deleteuserform'].submit();
 }
 
 function editthisuser(count)
 {
-	var username;
-	for (var i = 0; i < count; i++) 
-	{
-		username = "username" + i;
-		
-		if (document.getElementById(username).checked) 
-		{
-			username = document.getElementById(username).value;
-	        break;
-	    }
-	}
-	if(username == '')
+    var username;
+    for (var i = 0; i < count; i++)
     {
-    	alert("Please select a user.");
-    	return false;
+        username = "username" + i;
+
+        if (document.getElementById(username).checked)
+        {
+            username = document.getElementById(username).value;
+            break;
+        }
     }
-	else
-	{
-		var datastring = 'username='+username;  
-      	var url = '/editthisuser';
-      	$.ajax({ 
-	     type   : "POST", 
-	     url    : url, 
-	     data   : datastring,   
-	     success: function(responseText)
-	     { 
-	    	 try
-	    	 {
-	    		 document.forms['edituserform'].action='/editthisuser';
-	    		 document.forms['edituserform'].submit();
-	    	 }
-	    	 catch(e)
-	    	 {
-	    		 
-	    	 }
-	     }});
-   }	
+    if (username == '')
+    {
+        alert("Please select a user.");
+        return false;
+    }
+    else
+    {
+        var datastring = 'username=' + username;
+        var url = '/editthisuser';
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: datastring,
+            success: function (responseText)
+            {
+                try
+                {
+                    document.forms['edituserform'].action = '/editthisuser';
+                    document.forms['edituserform'].submit();
+                }
+                catch (e)
+                {
+
+                }
+            }});
+    }
 }
 
 function updateuser()
 {
-	var userid = document.getElementById("userid").value;
-	var username = document.getElementById("name").value;
-	var active = 0;
-	if(document.getElementById("active").checked)
-		active = 1;
-	var index = document.getElementById("role");
-	var role = index.options[index.selectedIndex].text;
-	
-	if(username == '')
+    var userid = document.getElementById("userid").value;
+    var username = document.getElementById("name").value;
+    var active = 0;
+    if (document.getElementById("active").checked)
+        active = 1;
+    var index = document.getElementById("role");
+    var role = index.options[index.selectedIndex].text;
+
+    if (username == '')
     {
-    	alert("Username cannot be empty.");
-    	return false;
+        alert("Username cannot be empty.");
+        return false;
     }
-	else
-	{
-		var datastring = 'userid='+userid+'&username='+username+'&active='+active+'&role='+role;  
-      	var url = '/updateuser';
-      	$.ajax({ 
-	     type   : "POST", 
-	     url    : url, 
-	     data   : datastring,   
-	     success: function(responseText)
-	     { 
-	    	 try
-	    	 {
-	    		 document.forms['editthisuserform'].action='/updateuser';
-	    		 document.forms['editthisuserform'].submit();
-	    	 }
-	    	 catch(e)
-	    	 {
-	    		 
-	    	 }
-	     }});
-	}
+    else
+    {
+        var datastring = 'userid=' + userid + '&username=' + username + '&active=' + active + '&role=' + role;
+        var url = '/updateuser';
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: datastring,
+            success: function (responseText)
+            {
+                try
+                {
+                    document.forms['editthisuserform'].action = '/updateuser';
+                    document.forms['editthisuserform'].submit();
+                }
+                catch (e)
+                {
+
+                }
+            }});
+    }
 }
 
 function addedrole()
 {
-	var rolename = document.getElementById("rolename").value;
-	var roledesc = document.getElementById("roledesc").value;
-	
-	var active = 0;
-	if(document.getElementById("optionsRadios1").checked)
-		active = 1;
-	
-	var checkboxes = document.getElementsByClassName("checkbox");
-	var checked = "";
-	var count = 0;
-	
-	if(rolename == '' || roledesc == '')
+    var rolename = document.getElementById("rolename").value;
+    var roledesc = document.getElementById("roledesc").value;
+
+    var active = 0;
+    if (document.getElementById("optionsRadios1").checked)
+        active = 1;
+
+    var checkboxes = document.getElementsByClassName("checkbox");
+    var checked = "";
+    var count = 0;
+
+    if (rolename == '' || roledesc == '')
     {
-    	alert("One of the fields in empty.");
-    	return false;
+        alert("One of the fields in empty.");
+        return false;
     }
 
-	else
-	{
-		for (var i=0; i<checkboxes.length; i++) 
-		{
-      		var panelid = 'panel' + i;
-      		if(document.getElementById(panelid).checked)
-      			checked += document.getElementById(panelid).value + ", ";
-     	}
-     	checked = checked.substring(0, checked.length - 2);
+    else
+    {
+        for (var i = 0; i < checkboxes.length; i++)
+        {
+            var panelid = 'panel' + i;
+            if (document.getElementById(panelid).checked)
+                checked += document.getElementById(panelid).value + ", ";
+        }
+        checked = checked.substring(0, checked.length - 2);
 
-		var datastring = 'rolename='+rolename+'&roledesc='+roledesc+'&active='+active+'&panels='+checked;
-		
-      	var url = '/addedrole';
-      	$.ajax({ 
-	     type   : "POST", 
-	     url    : url, 
-	     data   : datastring,   
-	     success: function(responseText)
-	     { 
-	    	 try
-	    	 {
-	    		 alert(responseText);
-	    	 }
-	    	 catch(e)
-	    	 {
-	    		 
-	    	 }
-	     }});
-	}
+        var datastring = 'rolename=' + rolename + '&roledesc=' + roledesc + '&active=' + active + '&panels=' + checked;
+
+        var url = '/addedrole';
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: datastring,
+            success: function (responseText)
+            {
+                try
+                {
+                    alert(responseText);
+                }
+                catch (e)
+                {
+
+                }
+            }});
+    }
 }
 
 function addpanel()
 {
-	var panelname = document.getElementById("panelname").value;
-	var paneldesc = document.getElementById("paneldesc").value;
-	var paneltype = document.getElementById("paneltype").value;
-	var panelparent = document.getElementById("panelparent").value;
-	
-	if(panelname == '' || paneldesc == '' || paneltype == '' || panelparent == '')
+    var panelname = document.getElementById("panelname").value;
+    var paneldesc = document.getElementById("paneldesc").value;
+    var paneltype = document.getElementById("paneltype").value;
+    var panelparent = document.getElementById("panelparent").value;
+
+    if (panelname == '' || paneldesc == '' || paneltype == '' || panelparent == '')
     {
-    	alert("One of the fields in empty.");
-    	die();
+        alert("One of the fields in empty.");
+        die();
     }
-	
-	 alert("validation successful.");
-	    
-	 document.forms['addpanelform'].action='/addedpanel';
-	 document.forms['addpanelform'].submit();
+
+    alert("validation successful.");
+
+    document.forms['addpanelform'].action = '/addedpanel';
+    document.forms['addpanelform'].submit();
 }
 
-function checkPassword(){
+function checkPassword() {
     var password = document.getElementById('password').value;
     var username = document.getElementById('userName').value;
-   
-    if (password=='') {
-            alert("Please Enter New Password.");
-            document.getElementById('password').value = '';
-            document.getElementById('password').focus();
-            return false;
+
+    if (password == '') {
+        alert("Please Enter New Password.");
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+        return false;
 
     }
-    if(password == ""){ 
-		alert("Error: Password cannot be blank!"); 
-		document.getElementById('password').focus(); 
-		return false; 
-	}
-	if(password == "valyoo@123" || password == "Valyoo@123"){ 
-		alert("Error: Password cannot be 'valyoo@123'."); 
-		document.getElementById('password').focus(); 
-		return false; 
-	}
-	
-	 if(username==password){
-   	  alert("Error! Username and  Password can't be same.");
-         document.getElementById('password').value = '';
-         document.getElementById('password').focus();
-         return false;
-   }
-	/*var regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; 
-	if(!password.match(regex)) { 
-		alert("Error: Password must contain at least six characters!"); 
-		document.getElementById('password').focus(); 
-		return false; 
-	} 
-	*/
-	if(password.length < 6) { 
-		alert("Error: Password must contain at least six characters!"); 
-		document.getElementById('password').focus(); 
-		return false; 
-	} 
+    if (password == "") {
+        alert("Error: Password cannot be blank!");
+        document.getElementById('password').focus();
+        return false;
+    }
+    if (password == "valyoo@123" || password == "Valyoo@123") {
+        alert("Error: Password cannot be 'valyoo@123'.");
+        document.getElementById('password').focus();
+        return false;
+    }
 
-	
-	re = /[0-9]/; 
-	if(!re.test(password)) { 
-		alert("Error:Password must contain one lowercase letter,one uppercase letter and one numeric digit. !"); 
-		document.getElementById('password').focus();
-		return false; 
-	} 
-	re = /[a-z]/; 
-	if(!re.test(password)) { 
-		alert("Error:Password must contain one lowercase letter,one uppercase letter and one numeric digit. !"); 
- 
-		document.getElementById('password').focus(); 
-		return false; 
-	} 
-	re = /[A-Z]/; 
-	if(!re.test(password)) { 
-		alert("Error:Password must contain one lowercase letter,one uppercase letter and one numeric digit. !"); 
-		document.getElementById('password').focus();
-		return false; 
-	}
-	document.forms['updateNewPassword'].action='/updateNewPassword';
-	document.forms['updateNewPassword'].submit();
+    if (username == password) {
+        alert("Error! Username and  Password can't be same.");
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+        return false;
+    }
+    /*var regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; 
+     if(!password.match(regex)) { 
+     alert("Error: Password must contain at least six characters!"); 
+     document.getElementById('password').focus(); 
+     return false; 
+     } 
+     */
+    if (password.length < 6) {
+        alert("Error: Password must contain at least six characters!");
+        document.getElementById('password').focus();
+        return false;
+    }
+
+
+    re = /[0-9]/;
+    if (!re.test(password)) {
+        alert("Error:Password must contain one lowercase letter,one uppercase letter and one numeric digit. !");
+        document.getElementById('password').focus();
+        return false;
+    }
+    re = /[a-z]/;
+    if (!re.test(password)) {
+        alert("Error:Password must contain one lowercase letter,one uppercase letter and one numeric digit. !");
+
+        document.getElementById('password').focus();
+        return false;
+    }
+    re = /[A-Z]/;
+    if (!re.test(password)) {
+        alert("Error:Password must contain one lowercase letter,one uppercase letter and one numeric digit. !");
+        document.getElementById('password').focus();
+        return false;
+    }
+    document.forms['updateNewPassword'].action = '/updateNewPassword';
+    document.forms['updateNewPassword'].submit();
 }
-function checkForgotPasswordEmailId(){
-var email = document.getElementById('username').value;
+function checkForgotPasswordEmailId() {
+    var email = document.getElementById('username').value;
     var checkEmail = validateEmail(email);
     if (!checkEmail) {
-            alert("Please Enter a valid Email Id.");
-	document.getElementById('username').value = '';
-            document.getElementById('username').focus();
-            return false;
+        alert("Please Enter a valid Email Id.");
+        document.getElementById('username').value = '';
+        document.getElementById('username').focus();
+        return false;
 
     }
-document.forms['forgotPassword'].action='/updatePassword';
-document.forms['forgotPassword'].submit();
+    document.forms['forgotPassword'].action = '/updatePassword';
+    document.forms['forgotPassword'].submit();
 }
 
 function checkDepartment()
 {
-var userId = document.getElementById('username').value;
-var passwd = document.getElementById('password').value;
-document.getElementById("showMsg").innerHTML="";
-var dept=0;
-var visible= $('#dept').is(':hidden');
-if(!visible){;
-	if(document.getElementById("selDept").value!=""){
-		if(document.getElementById("selDept").value=='Other' && document.getElementById("selOther").value==""){
-			document.getElementById("showMsg").innerHTML="Please Enter Department";
-			return false;
-		}
-		dept =1;
-	}else{
-		document.getElementById("showMsg").innerHTML="Please Select Department";
-		return false;
-	}
-}
-if(dept==1){
-	document.getElementById("adduser").submit();
-}
-else if(userId!="" && passwd!=""){
-	var datastring = 'userId='+userId+'&passwd='+passwd;  
-      	var url = '/checkDepartment';
-      	$.ajax({ 
-	     type   : "POST", 
-	     url    : url, 
-	     data   : datastring,   
-	     success: function(responseText) { 
-		try{
-			var obj = JSON.parse(responseText);
-			if(obj.result==1)
-	        	{
-				document.getElementById("adduser").submit();
-	        	}
-	        	else if(obj.result==0)
-	        	{
-				var obj2 = JSON.parse(obj.dept); 
-				document.getElementById('login').style.padding="105px";
-				document.getElementById('dept').style.display="block";
-				for(i=0; i<obj2.length; i++){
-					if(!(document.getElementById("selDept").options[i+1])){
-						var option = document.createElement("option");
-						option.text = obj2[i].reason;
-						option.value = obj2[i].reason;
-						var select = document.getElementById("selDept");
-						select.appendChild(option);
-					}
-			
-				}
-				
-	        	}else{
-				document.getElementById("showMsg").innerHTML = "Authentication Failure";
-			}
-		}catch(e){
-		} 
-	        
-	    } 
-       	}); 
-}else{
-	document.getElementById("showMsg").innerHTML = "Please Enter User Id OR Password";
-}
+    var userId = document.getElementById('username').value;
+    var passwd = document.getElementById('password').value;
+    document.getElementById("showMsg").innerHTML = "";
+    var dept = 0;
+    var visible = $('#dept').is(':hidden');
+    if (!visible) {
+        ;
+        if (document.getElementById("selDept").value != "") {
+            if (document.getElementById("selDept").value == 'Other' && document.getElementById("selOther").value == "") {
+                document.getElementById("showMsg").innerHTML = "Please Enter Department";
+                return false;
+            }
+            dept = 1;
+        } else {
+            document.getElementById("showMsg").innerHTML = "Please Select Department";
+            return false;
+        }
+    }
+    if (dept == 1) {
+        document.getElementById("adduser").submit();
+    }
+    else if (userId != "" && passwd != "") {
+        var datastring = 'userId=' + userId + '&passwd=' + passwd;
+        var url = '/checkDepartment';
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: datastring,
+            success: function (responseText) {
+                try {
+                    var obj = JSON.parse(responseText);
+                    if (obj.result == 1)
+                    {
+                        document.getElementById("adduser").submit();
+                    }
+                    else if (obj.result == 0)
+                    {
+                        var obj2 = JSON.parse(obj.dept);
+                        document.getElementById('login').style.padding = "105px";
+                        document.getElementById('dept').style.display = "block";
+                        for (i = 0; i < obj2.length; i++) {
+                            if (!(document.getElementById("selDept").options[i + 1])) {
+                                var option = document.createElement("option");
+                                option.text = obj2[i].reason;
+                                option.value = obj2[i].reason;
+                                var select = document.getElementById("selDept");
+                                select.appendChild(option);
+                            }
+
+                        }
+
+                    } else {
+                        document.getElementById("showMsg").innerHTML = "Authentication Failure";
+                    }
+                } catch (e) {
+                }
+
+            }
+        });
+    } else {
+        document.getElementById("showMsg").innerHTML = "Please Enter User Id OR Password";
+    }
 }
 
 function openDepartment()
 {
-	document.getElementById("showMsg").innerHTML="";
-	if(document.getElementById("selDept").value=='Other')
-	{
-		document.getElementById('selOther').style.display="block";
-	}
-	else
-	{
-	document.getElementById('selOther').style.display="none";
-	}
-}
-
-	function addpanel()
-	{
-	var panelname = document.getElementById("panelname").value;
-    var panelurl = document.getElementById("panelurl").value;
-    var paneldesc = document.getElementById("paneldesc").value;
-    
-    var index = document.getElementById("type");
-    var type = index.options[index.selectedIndex].value;
-    
-    var index = document.getElementById("parent");
-    var parent = index.options[index.selectedIndex].value;
-   
-    if(panelname == '' || panelurl == '')
+    document.getElementById("showMsg").innerHTML = "";
+    if (document.getElementById("selDept").value == 'Other')
     {
-    	alert("One of the fields in empty.");
-    	return false;
+        document.getElementById('selOther').style.display = "block";
     }
     else
-	{
-		var datastring = 'panelname=' + panelname + '&panelurl=/' + panelurl + '&paneldesc=' + paneldesc + '&type=' + type + '&parent=' + parent;
-      	var url = '/addedpanel';
-      	$.ajax({ 
-	     type   : "POST", 
-	     url    : url, 
-	     data   : datastring,   
-	     success: function(responseText)
-	     { 
-	    	 try
-	    	 {
-	    		 alert(responseText);
-	    	 }
-	    	 catch(e)
-	    	 {
-	    		 
-	    	 }
-	     }});
-      }
-   }
+    {
+        document.getElementById('selOther').style.display = "none";
+    }
+}
 
-   function deletepanel()
-   {
-   		var index = document.getElementById("panelid");
-    	var panel = index.options[index.selectedIndex].value;
-    	var datastring = 'panel=' + panel;
-    	var url = '/deletedpanel';
-    	$.ajax({ 
-	     type   : "POST", 
-	     url    : url, 
-	     data   : datastring,   
-	     success: function(responseText)
-	     { 
-	    	 try
-	    	 {
-	    	 	alert(responseText);
-	       	 }
-	    	 catch(e)
-	    	 {
-	    		 
-	    	 }
-	     }});
-   }
+function addpanel()
+{
+    var panelname = document.getElementById("panelname").value;
+    var panelurl = document.getElementById("panelurl").value;
+    var paneldesc = document.getElementById("paneldesc").value;
 
-   function editpanel()
-   {
-   		var index = document.getElementById("panelid");
-    	var panel = index.options[index.selectedIndex].value;
-    	var datastring = 'panel=' + panel;
-    	var url = '/editthispanel';
-    	$.ajax({ 
-	     type   : "POST", 
-	     url    : url, 
-	     data   : datastring,   
-	     success: function(responseText)
-	     { 
-	    	 try
-	    	 {
-	    	 	document.forms['editpanelform'].action='/editthispanel';
-	    	 	document.forms['editpanelform'].submit();
-	       	 }
-	    	 catch(e)
-	    	 {
-	    		 
-	    	 }
-	     }});
-   }
-   
+    var index = document.getElementById("type");
+    var type = index.options[index.selectedIndex].value;
+
+    var index = document.getElementById("parent");
+    var parent = index.options[index.selectedIndex].value;
+
+    if (panelname == '' || panelurl == '')
+    {
+        alert("One of the fields in empty.");
+        return false;
+    }
+    else
+    {
+        var datastring = 'panelname=' + panelname + '&panelurl=/' + panelurl + '&paneldesc=' + paneldesc + '&type=' + type + '&parent=' + parent;
+        var url = '/addedpanel';
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: datastring,
+            success: function (responseText)
+            {
+                try
+                {
+                    alert(responseText);
+                }
+                catch (e)
+                {
+
+                }
+            }});
+    }
+}
+
+function deletepanel()
+{
+    var index = document.getElementById("panelid");
+    var panel = index.options[index.selectedIndex].value;
+    var datastring = 'panel=' + panel;
+    var url = '/deletedpanel';
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: datastring,
+        success: function (responseText)
+        {
+            try
+            {
+                alert(responseText);
+            }
+            catch (e)
+            {
+
+            }
+        }});
+}
+
+function editpanel()
+{
+    var index = document.getElementById("panelid");
+    var panel = index.options[index.selectedIndex].value;
+    var datastring = 'panel=' + panel;
+    var url = '/editthispanel';
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: datastring,
+        success: function (responseText)
+        {
+            try
+            {
+                document.forms['editpanelform'].action = '/editthispanel';
+                document.forms['editpanelform'].submit();
+            }
+            catch (e)
+            {
+
+            }
+        }});
+}
+
 function updatepanel()
 {
-   	var panelid = document.getElementById("panelid").value;
-   	var panelname = document.getElementById("panelname").value;
-   	var panelurl = document.getElementById("panelurl").value;
-   	var paneldesc = document.getElementById("paneldesc").value;
-   	
-   	var index = document.getElementById("type");
-   	var type = index.options[index.selectedIndex].value;
-   	
-   	var index = document.getElementById("parent");
-   	var parent = index.options[index.selectedIndex].value;
-   	
-   	if(panelname == '')
+    var panelid = document.getElementById("panelid").value;
+    var panelname = document.getElementById("panelname").value;
+    var panelurl = document.getElementById("panelurl").value;
+    var paneldesc = document.getElementById("paneldesc").value;
+
+    var index = document.getElementById("type");
+    var type = index.options[index.selectedIndex].value;
+
+    var index = document.getElementById("parent");
+    var parent = index.options[index.selectedIndex].value;
+
+    if (panelname == '')
     {
-       	alert("Panel name cannot be empty.");
-       	return false;
+        alert("Panel name cannot be empty.");
+        return false;
     }
-   	else
-   	{
-   		var datastring = 'panelid='+panelid+'&panelname='+panelname+'&panelurl='+panelurl+'&paneldesc='+paneldesc+'&type='+type+'&parent='+parent; 
-         	var url = '/updatepanel';
-         	$.ajax({ 
-   	     type   : "POST", 
-   	     url    : url, 
-   	     data   : datastring,   
-   	     success: function(responseText)
-   	     { 
-   	    	 try
-   	    	 {
-   	    		 alert(responseText);
-   	    	 }
-   	    	 catch(e)
-   	    	 {
-   	    		 
-   	    	 }
-   	     }});
-   	}
+    else
+    {
+        var datastring = 'panelid=' + panelid + '&panelname=' + panelname + '&panelurl=' + panelurl + '&paneldesc=' + paneldesc + '&type=' + type + '&parent=' + parent;
+        var url = '/updatepanel';
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: datastring,
+            success: function (responseText)
+            {
+                try
+                {
+                    alert(responseText);
+                }
+                catch (e)
+                {
+
+                }
+            }});
+    }
 }
 
 function editrole()
 {
-	var flag = document.getElementById("flag").value;
-	var index = document.getElementById("role");
+    var flag = document.getElementById("flag").value;
+    var index = document.getElementById("role");
     var rolename = index.options[index.selectedIndex].text;
 
-	if(rolename == '')
+    if (rolename == '')
     {
-    	alert("Please select a role.");
-    	return false;
+        alert("Please select a role.");
+        return false;
     }
 
     document.getElementById("flag").value = 1;
-    document.forms['editroleform'].action='/editthisrole';
-	document.forms['editroleform'].submit();
+    document.forms['editroleform'].action = '/editthisrole';
+    document.forms['editroleform'].submit();
 }
 
 function updaterole()
 {
-	var roleid = document.getElementById("roleid").value;
-	var rolename = document.getElementById("rolename").value;
-	var roledesc = document.getElementById("roledesc").value;
-	
-	var active = 0;
-	if(document.getElementById("optionsRadios1").checked)
-		active = 1;
-	
-	var checkboxes = document.getElementsByClassName("checkbox");
-	var checked = "";
-	var count = 0;
-	
-	if(rolename == '' || roledesc == '')
+    var roleid = document.getElementById("roleid").value;
+    var rolename = document.getElementById("rolename").value;
+    var roledesc = document.getElementById("roledesc").value;
+
+    var active = 0;
+    if (document.getElementById("optionsRadios1").checked)
+        active = 1;
+
+    var checkboxes = document.getElementsByClassName("checkbox");
+    var checked = "";
+    var count = 0;
+
+    if (rolename == '' || roledesc == '')
     {
-    	alert("One of the fields in empty.");
-    	return false;
+        alert("One of the fields in empty.");
+        return false;
     }
 
-	else
-	{
-		for (var i=0; i<checkboxes.length; i++) 
-		{
-			
-      		var panelid = 'panel' + i;
-      		if(document.getElementById(panelid).checked)
-      		{
-      			checked += document.getElementById(panelid).value + ", ";
-      		}
-     	}
-     	checked = checked.substring(0, checked.length - 2);
-     	var datastring = 'rolename='+rolename+'&roledesc='+roledesc+'&active='+active+'&panels='+checked;
-      	var url = '/updaterole';
-      	$.ajax({ 
-	     type   : "POST", 
-	     url    : url, 
-	     data   : datastring,   
-	     success: function(responseText)
-	     {
+    else
+    {
+        for (var i = 0; i < checkboxes.length; i++)
+        {
 
-	    	 if(responseText == '1')
-	    	 {
-	    	 	alert("Role update success");
-	    	 	location.href="/editrole";
-	    	 }
-	    	 else if(responseText == '0')
-	    	 {
-	    	 	alert("Role update failed. Please try again.");
-	    	 }
-	     }});
-	}
+            var panelid = 'panel' + i;
+            if (document.getElementById(panelid).checked)
+            {
+                checked += document.getElementById(panelid).value + ", ";
+            }
+        }
+        checked = checked.substring(0, checked.length - 2);
+        var datastring = 'rolename=' + rolename + '&roledesc=' + roledesc + '&active=' + active + '&panels=' + checked;
+        var url = '/updaterole';
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: datastring,
+            success: function (responseText)
+            {
+
+                if (responseText == '1')
+                {
+                    alert("Role update success");
+                    location.href = "/editrole";
+                }
+                else if (responseText == '0')
+                {
+                    alert("Role update failed. Please try again.");
+                }
+            }});
+    }
 }
 
-   function deleterole()
-   {
-   		var index = document.getElementById("roleid");
-    	var role = index.options[index.selectedIndex].value;
-    	var datastring = 'role=' + role;
-    	var url = '/deletedrole';
-    	$.ajax({ 
-	     type   : "POST", 
-	     url    : url, 
-	     data   : datastring,   
-	     success: function(responseText)
-	     { 
-	    	 try
-	    	 {
-	    	 	
-	       	 }
-	    	 catch(e)
-	    	 {
-	    		 
-	    	 }
-	     }});
-   }
+function deleterole()
+{
+    var index = document.getElementById("roleid");
+    var role = index.options[index.selectedIndex].value;
+    var datastring = 'role=' + role;
+    var url = '/deletedrole';
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: datastring,
+        success: function (responseText)
+        {
+            try
+            {
 
-   function updateimages()
-   {
-      	
-      	var tag;
-   		
-   		tag = document.getElementById('tag').value;
-   	    
-   		if(tag == '')
-       	{
-       		alert("Please select a role.");
-       		return false;
-       	}
-       	alert(tag);
-        document.forms['gettagform'].action='/updateimagesfromtag';
-   		document.forms['gettagform'].submit();
-   }
+            }
+            catch (e)
+            {
 
-   function search()
-   {
-   		var date = document.getElementById('date').value;
-   		var tag = document.getElementById('tag').value;
-   		var index = document.getElementById("source");
-    	var source = index.options[index.selectedIndex].value;
+            }
+        }});
+}
 
-   		length=document.getElementById('categories').length;
-   	 	categories=document.getElementById('categories');
-   	 	var categorietags = "";
-   	 	for(i=0; i<length; i++)
-   	 		if(categories[i].selected)
-   	 			categorietags += categories[i].text + ', ';
-   	 	
-   	 	length=document.getElementById('subcategories').length;
-   	 	subcategories=document.getElementById('subcategories');
-   	 	subcategorietags = "";
-   	 	for(i=0; i<length; i++)
-   	 		if(subcategories[i].selected)
-   	 			subcategorietags += subcategories[i].text + ', ';
+function updateimages()
+{
 
-   	 	alert(subcategorietags);
+    var tag;
 
-		document.forms['searchform'].action='/getimages/1';
-   		document.forms['searchform'].submit();
-   }
+    tag = document.getElementById('tag').value;
 
-   function getinfo(url, page)
-   {
-   		if(url == 'getimages')
-   		{
-   			var date = document.getElementById('date').value;
-   			var tag = document.getElementById('tag').value;
-   			var source = document.getElementById('source').value;
-   		}
+    if (tag == '')
+    {
+        alert("Please select a role.");
+        return false;
+    }
+    alert(tag);
+    document.forms['gettagform'].action = '/updateimagesfromtag';
+    document.forms['gettagform'].submit();
+}
 
-   		var redirect = "/" + url + "/" + page;
-   		
-   		document.forms['infoform'].action=redirect;
-   		document.forms['infoform'].submit(); 		
-   }
+function search()
+{
+    var date = document.getElementById('date').value;
+    var tag = document.getElementById('tag').value;
+    var index = document.getElementById("source");
+    var source = index.options[index.selectedIndex].value;
 
-   function updatesubcat()
-   {
-      	json = document.getElementById('json').value;
-   		obj = JSON.parse(json);
+    length = document.getElementById('categories').length;
+    categories = document.getElementById('categories');
+    var categorietags = "";
+    for (i = 0; i < length; i++)
+        if (categories[i].selected)
+            categorietags += categories[i].text + ', ';
 
-   	 	length=document.getElementById('categories').length;
-   	 	categories=document.getElementById('categories');
-   		
-   	 	var str = [];
-   	 	temp ='<select id="subcategories" name="subcategories[]" multiple="multiple">';
-   	 	//temp = "";
-   	 	//pickme=document.getElementById('pickme');
-   	 	//children = pickme.childNodes;
-   	 	//for(i=0;i<children.length;i++)
-   	 	//{
-   	 		//alert(children[i].nodeName);
-   	 		//if(children[i].nodeName == 'multiselect-container dropdown-menu')
+    length = document.getElementById('subcategories').length;
+    subcategories = document.getElementById('subcategories');
+    subcategorietags = "";
+    for (i = 0; i < length; i++)
+        if (subcategories[i].selected)
+            subcategorietags += subcategories[i].text + ', ';
 
-   	 	//}
-   	 	inner = -1;
-   	 	subcategories=document.getElementById('subs');
-   	 	for(i=0; i<length; i++)
-   	 	{	
-   	 		if(categories[i].selected)
-   	 		{
-   	 			if(obj.hum_menu_list[i].subcategories)
-   	 			{
-   	 				var subcatlength = obj.hum_menu_list[i].subcategories.length;
-   	 				for(count=0; count<subcatlength; count++)
-   	 				{
-   	 					str[++inner] = obj.hum_menu_list[i].subcategories[count].name;
-   	 					
-   	 					value = str[inner];
-   	 					value = value.toLowerCase();
-   	 					value = value.replace(" ", "_");
+    alert(subcategorietags);
 
-   	 					temp += '<option value="' + value + '">' + str[inner] +'</option>';
-   	 				}
-   	 			}
-			}
-		}
-		temp += '</select>';
-		subcategories.innerHTML = temp;
-   }
+    document.forms['searchform'].action = '/getimages/1';
+    document.forms['searchform'].submit();
+}
 
-   function updatethisimage()
-   {
-   		imageid=document.getElementById('imageid').value;
-   		length=document.getElementById('categories').length;
-   	 	categories=document.getElementById('categories');
-   	 	categorietags = "";
-   	 	for(i=0; i<length; i++)
-   	 		if(categories[i].selected)
-   	 			categorietags += categories[i].text + ', ';
+function getinfo(url, page)
+{
+    if (url == 'getimages')
+    {
+        var date = document.getElementById('date').value;
+        var tag = document.getElementById('tag').value;
+        var source = document.getElementById('source').value;
+    }
 
-   	 	length=document.getElementById('subcategories').length;
-   	 	subcategories=document.getElementById('subcategories');
-   	 	subcategorietags = "";
-   	 	for(i=0; i<length; i++)
-   	 		if(subcategories[i].selected)
-   	 			subcategorietags += subcategories[i].text + ', ';
+    var redirect = "/" + url + "/" + page;
 
-   	 	length=document.getElementById('consumertype').length;
-   	 	consumertype=document.getElementById('consumertype');
-   	 	consumertypetags = "";
-   	 	for(i=0; i<length; i++)
-   	 		if(consumertype[i].selected)
-   	 			consumertypetags += consumertype[i].value + ', ';
+    document.forms['infoform'].action = redirect;
+    document.forms['infoform'].submit();
+}
 
-   		manualtags = document.getElementById('manualtags').value;
+function updatesubcat()
+{
+    json = document.getElementById('json').value;
+    obj = JSON.parse(json);
 
-   		var datastring = 'imageid='+imageid+'&categorytags='+categorietags+'&subcategorytags='+subcategorietags+'&consumertypetags='+consumertypetags+'&manualtags='+manualtags;
-      	var url = '/updatethisimage';
-      	$.ajax({ 
-	     type   : "POST", 
-	     url    : url, 
-	     data   : datastring,   
-	     success: function(responseText)
-	     {
+    length = document.getElementById('categories').length;
+    categories = document.getElementById('categories');
 
-	     }});
-   }
+    var str = [];
+    temp = '<select id="subcategories" name="subcategories[]" multiple="multiple">';
+    //temp = "";
+    //pickme=document.getElementById('pickme');
+    //children = pickme.childNodes;
+    //for(i=0;i<children.length;i++)
+    //{
+    //alert(children[i].nodeName);
+    //if(children[i].nodeName == 'multiselect-container dropdown-menu')
+
+    //}
+    inner = -1;
+    subcategories = document.getElementById('subs');
+    for (i = 0; i < length; i++)
+    {
+        if (categories[i].selected)
+        {
+            if (obj.hum_menu_list[i].subcategories)
+            {
+                var subcatlength = obj.hum_menu_list[i].subcategories.length;
+                for (count = 0; count < subcatlength; count++)
+                {
+                    str[++inner] = obj.hum_menu_list[i].subcategories[count].name;
+
+                    value = str[inner];
+                    value = value.toLowerCase();
+                    value = value.replace(" ", "_");
+
+                    temp += '<option value="' + value + '">' + str[inner] + '</option>';
+                }
+            }
+        }
+    }
+    temp += '</select>';
+    subcategories.innerHTML = temp;
+}
+
+function updatethisimage()
+{
+    imageid = document.getElementById('imageid').value;
+    length = document.getElementById('categories').length;
+    categories = document.getElementById('categories');
+    categorietags = "";
+    for (i = 0; i < length; i++)
+        if (categories[i].selected)
+            categorietags += categories[i].text + ', ';
+
+    length = document.getElementById('subcategories').length;
+    subcategories = document.getElementById('subcategories');
+    subcategorietags = "";
+    for (i = 0; i < length; i++)
+        if (subcategories[i].selected)
+            subcategorietags += subcategories[i].text + ', ';
+
+    length = document.getElementById('consumertype').length;
+    consumertype = document.getElementById('consumertype');
+    consumertypetags = "";
+    for (i = 0; i < length; i++)
+        if (consumertype[i].selected)
+            consumertypetags += consumertype[i].value + ', ';
+
+    manualtags = document.getElementById('manualtags').value;
+
+    var datastring = 'imageid=' + imageid + '&categorytags=' + categorietags + '&subcategorytags=' + subcategorietags + '&consumertypetags=' + consumertypetags + '&manualtags=' + manualtags;
+    var url = '/updatethisimage';
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: datastring,
+        success: function (responseText)
+        {
+
+        }});
+}
+
+$(document).ready(function () {
+    $("#username").focus(function () {
+        $('.signup-character-arm-top').css('display', 'block');
+        $('.signup-character-arm-top-mid').css('display', 'none');
+    });
+
+    $('#password').focus(function () {
+        $('.signup-character-arm-top').css('display', 'none');
+        $('.signup-character-arm-top-mid').css('display', 'block');
+
+    });
+    var cancel = false;
+    $(".profile_pic").hover(function () {
+
+        cancel = (cancel) ? false : true;
+//alert('test');
+        if (!cancel) {
+            $(".arrow_box").hide();
+        }
+        else if (cancel) {
+            $(".arrow_box").show();
+        }
+
+
+    });
+});
+
+
+

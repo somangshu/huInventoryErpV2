@@ -245,11 +245,11 @@ border-radius: 5px !important;
 }
 .btn-info,
 .dropdown-toggle.btn-info {
-  background-color: #007800;
+  background-color: #F05A27;
 }
 .btn-info:hover,
 .dropdown-toggle.btn-info:hover {
-  background-color: #689f38;
+  background-color: #FF4100;
 }
 .btn-info:active,
 .dropdown-toggle.btn-info:active,
@@ -821,6 +821,11 @@ fieldset[disabled] .form-control {
   outline: 0;
   box-shadow: none;
 }
+
+#username input:required:focus {
+  border: 1px solid red;
+  outline: none;
+}
 /* -- import Bootstrap v3 ----------------------------- */
 /* -- import Roboto Font ------------------------------ */
 /* -- body styles ------------------------------------- */
@@ -872,6 +877,27 @@ background-repeat: no-repeat;
   text-transform: inherit;
   letter-spacing: inherit;
 }
+  
+.signup-character{display: inline-block;
+  height: 436px;
+  left: 6em;
+  position: absolute;
+  width: 350px;
+  z-index: -3700;
+  top: 17em;}
+.signup-character figure{background-image:url('../images/character.png');position:absolute}
+.signup-character-face-oops,
+.signup-character-arm-top-mid,
+.signup-character-arm-bottom-mid,
+.signup-character-arm-bottom{display:none;z-index:0}
+.signup-character-body{left:0;height:400px;top:0;width:180px;z-index:1000}
+.signup-character-arm-top{background-position:-181px 0;left:115px;height:169px;top:62px;width:199px}
+.signup-character-arm-top-mid{background-position:-181px -169px;height:117px;left:79px;top:124px;width:241px}
+.signup-character-arm-bottom-mid{background-position:-181px -286px;height:140px;left:47px;top:121px;width:271px}
+.signup-character-arm-bottom{background-position:-181px -426px;height:128px;left:115px;top:163px;width:204px}
+.signup-character-face-happy{background-position:0px -417px;height:87px;left:50px;top:82px;width:75px;z-index:2000}
+.signup-character-face-oops{background-position:-75px -416px;height:92px;left:55px;overflow:hidden;top:69px;width:71px;z-index:2000}
+
 /* card animation from Animate.css -------------------- */
 @-webkit-keyframes cardEnter {
   0%,

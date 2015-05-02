@@ -429,4 +429,83 @@ class site extends CI_Controller
 
 		$data['info'] = $this->enterprisesmodel->updatethisimage($data);
 	}
+        
+        public function makemenu()
+	{
+		$this->load->model("enterprisesmodel");
+		$this->load->library('session');
+		$sessionUserData = $this->session->all_userdata();
+		$data['sessionUserData']=$sessionUserData;
+		$menuPanelsArray=$this->enterprisesmodel->getAllPanelsByRole($sessionUserData['user_role_id']);
+
+		$stack = array();
+		$menu = array();
+		$tos = -1;
+		$stack[++$tos] = "0";
+		$count = 0;
+
+		$outer = 0;
+		$inner = 0;
+		$level = 0;
+
+		while($count != count($menuPanelsArray)-1)
+		{	
+			$flag = 0;
+			for ($i=0; $i <= count($menuPanelsArray) - 1; $i++)
+			{     					  	
+				if ($menuPanelsArray[$i]['panel_parent_id'] != $stack[$tos])
+					continue;
+			  	else 
+              	{
+              		$level++;
+              		$stack[++$tos] = $menuPanelsArray[$i]['panel_id'];
+              		$menuPanelsArray[$i]['panel_parent_id'] = -1;
+              		$flag = 1;
+              		$count++;	
+              		$temp[$outer][$inner++] = $menuPanelsArray[$i]['panel_name'];
+              		break;	
+              	}
+			}
+			if(!$flag)
+			{
+				$level--;
+             	--$tos;
+             	
+             	if($level == 0)
+             	{
+             		++$outer;
+             		$inner = 0;
+             	}
+            }
+        }
+        $topmenu = array();
+        $menu = array();
+        $submenu = array();
+        $i = -1;
+        foreach($temp as $category)
+        {
+        	$flag = 1;
+        	$j = 0;
+        	foreach($category as $level)
+        	{
+        		if($flag)
+        		{
+        			$menu = $level;
+        			$flag = 0;
+        		}
+        		else
+        			$submenu[$j++] = $level;
+        	}
+        	$topmenu[++$i]['menu'] = $menu;
+        	$topmenu[$i]['submenu'] = $submenu;
+        }
+        $json = json_encode($topmenu);
+//        $data = substr($json, 1, -1);
+//        var_dump($json);
+//        $data = rtrim($json,"]");
+//        var_dump($data);
+        print_r($json);
+//        return $json;
+    }
+        
 }
