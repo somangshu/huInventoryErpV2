@@ -471,12 +471,7 @@ function updatepanel()
     {
         alert("Panel name cannot be empty.");
         return false;
-    }
-    else
-    {
-
-       	alert("Panel name cannot be empty.");
-       	return false;
+    
     }
    	else
    	{
