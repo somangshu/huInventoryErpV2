@@ -1,7 +1,8 @@
 <?php 
-	$this->load->view('common/menu'); 
+	$this->load->view('common/menu');
+	if(isset($url))
+	{
 ?>
-<!DOCTYPE html>
 <html lang="en">
 <head>
 	<title>
@@ -9,8 +10,10 @@
 	</title>
 </head>
 <body>
+	<input type="hidden" name="url" id="url" value="<?php echo $url; ?>">
+	<?php } ?>
 	<input type="hidden" id="json" name="json" value='<?php echo $json; ?>'>
-	<?php 
+	<?php
 	if($search && $flag)
 	{
 ?>
@@ -23,6 +26,48 @@
 			<i class="mdi-content-create"></i>Search
 			<hr>
 			<div class="form-group">
+				Category Tags:<br /> 
+				<select id="categories" name="categories[]" multiple="multiple" onchange="updatesubcat();">
+                    <?php
+                        foreach($array["hum_menu_list"] as $category)
+                            {
+                                $value = strtolower($category['name']);
+                                $value = str_replace(' ','_',$value);
+                                
+                                if(in_array($value, $post['categories']))
+                                	echo '<option value="'.$value.'" selected="selected">'.$category['name'].'</option>';
+                                else
+                                	echo '<option value="'.$value.'">'.$category['name'].'</option>';
+                             } 
+                    ?>
+                </select>
+                <br />Sub-Category Tags:<br /> 
+                <div id="subs">
+                	<select id="subcategories" name="subcategories[]" multiple="multiple">
+                    <?php
+                        	foreach($array["hum_menu_list"] as $category)
+                            {
+                                $value = strtolower($category['name']);
+                                $value = str_replace(' ','_',$value);
+                                
+                                if(in_array($value, $post['categories']) && isset($category['subcategories']))
+                                {
+                                	foreach($category['subcategories'] as $subcategory)
+                                	{
+                                		$subvalue = strtolower($subcategory['name']);
+                                		$subvalue = str_replace(' ','_',$subvalue);
+                                		
+                                		if(in_array($subvalue, $post['subcategories']))
+                                			echo '<option value="'.$subvalue.'" selected="selected">'.$subcategory['name'].'</option>';
+                                		else
+                                			echo '<option value="'.$subvalue.'">'.$subcategory['name'].'</option>';
+                             		}
+                             	}
+                            }
+                            
+                    ?>
+                </select>
+                </div>
 	              <div class="form-control-wrapper">
 	              	<b>#</b><input class="form-control empty" type="text" name="tag" id="tag" value="<?php echo $post['tag']; ?>">
 	            </div>
@@ -144,28 +189,29 @@
 if($flag)
 {
 ?>	
-
-<form class="form-horizontal" name="infoform" id="infoform" onsubmit="return getinfo()" method="post">
+<form class="form-horizontal" name="deleteimageform" id="deleteimageform" onsubmit="return false" method="post">
 <div id="container">	
+	<div class="col-sm-12">
 <?php 
 	for($i=0;$i<count($imagedata['url']);$i++)
+	{
+?>
+
+		<div class="col-sm-3">
+		<div class="checkbox">
+            <label>
+                <input type="checkbox" id="checkbox<?php echo $i; ?>" name="checkbox<?php echo $i; ?>" value='<?php echo $imagedata["imageid"][$i]; ?>'> Delete
+            </label>
+        </div>
+		<?php
 		echo $imagedata['url'][$i];
-
-	echo '<h3><pre><a href="javascript: getinfo(\''.$url.'\', 1);">          First Page          </a>';
-	echo '<a href="javascript: getinfo(\''.$url.'\', '.$imagedata['totalpages'].');">          Last Page          </a>';
-	echo '<br />';
-	echo '<br />';
-	if($imagedata['page'] != 1)
-	{
-		$back = $imagedata['page'] - 1;
-		echo '<a href="javascript: getinfo(\''.$url.'\', '.$back.');">               Back          </a>';
+		?>
+	</div>
+	<?php
 	}
-	if($imagedata['page'] != $imagedata['totalpages'])
-	{
-		$next = $imagedata['page'] + 1;
-		echo '<a href="javascript: getinfo(\''.$url.'\', '.$next.');">          Next          </a>('.$imagedata['page'].' of '.$imagedata['totalpages'].' pages)</pre></h3>';
-	}
-
+	echo '</form>';
+	echo '<input type="button" id="sub" class="btn btn-primary" onclick="return deleteimages()" value="Delete Images" style="width:100%">';
+	echo '<form class="form-horizontal" name="infoform" id="infoform" onsubmit="return getinfo()" method="post">';
 	if($url == 'getimages')
 	{
 		$cat = 0;
@@ -181,7 +227,6 @@ if($flag)
 			$subcat = 1;
 		}
 ?>		
-	<!-- <form class="form-horizontal" name="infoform" id="infoform" onsubmit="return getinfo()" method="post"> -->
 		<input type='hidden' name='tag' id='tag' value="<?php echo $post['tag'];?>">
 		<input type='hidden' name='source' id='source' value="<?php echo $post['source'];?>">
 		<input type='hidden' name='date' id='date' value="<?php echo $post['date'];?>">
@@ -190,9 +235,31 @@ if($flag)
 			echo '<input type="hidden" name="categories" id="categories" value="<?php echo $categories;?>">';
 		if($subcat)
 			echo '<input type="hidden" name="subcategories" id="subcategories" value="<?php echo $subcategories;?>">';
+		if($url)
+			echo '<input type="hidden" name="url" id="url" value="'.$url.'">';
+
 	}
 }
 ?>
+</div>
+<div class="col-sm-12">
+<?php
+	echo '<h3><pre><a href="javascript: getinfo(\''.$url.'\', 1);">          First Page          </a>';
+	echo '<a href="javascript: getinfo(\''.$url.'\', '.$imagedata['totalpages'].');">          Last Page          </a>';
+	echo '<br />';
+	echo '<br />';
+	if($imagedata['page'] != 1)
+	{
+		$back = $imagedata['page'] - 1;
+		echo '<a href="javascript: getinfo(\''.$url.'\', '.$back.');">               Back          </a>';
+	}
+	if($imagedata['page'] != $imagedata['totalpages'])
+	{
+		$next = $imagedata['page'] + 1;
+		echo '<a href="javascript: getinfo(\''.$url.'\', '.$next.');">          Next          </a>('.$imagedata['page'].' of '.$imagedata['totalpages'].' pages)</pre></h3>';
+	}
+?>
+</div>
 </div>
 </form>
 </body>

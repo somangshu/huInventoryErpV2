@@ -502,3 +502,7 @@ animation:*/
 .like_text{
   font-size: 12px;
 }
+
+.img_checkbox{
+  float: left;
+}

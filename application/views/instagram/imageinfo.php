@@ -125,6 +125,7 @@ $this->load->view('common/menu');
                         <td>
                             
                             <input type="hidden" id="json" name="json" value='<?php echo $json; ?>'>
+                            <input type="hidden" id="imageurl" name="imageurl" value='<?php echo $info[0]['imageurl']; ?>'>
 
                             <select id="categories" multiple="multiple" onchange="updatesubcat();">
                                 <?php

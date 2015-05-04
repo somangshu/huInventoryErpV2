@@ -288,7 +288,7 @@ class site extends CI_Controller
 				
 				if(!$result)
 				{
-					print_r("Error in insert to db.");
+					print_r("Updation complete");
 				 	die();
 				}
 				
@@ -351,8 +351,12 @@ class site extends CI_Controller
 		$data['imagedata']['page'] = $page;
 		$data['url'] = 'getimages';
 		$data['post'] = $post;
+		
 		$data['flag'] = 1;
 		$data['search'] = 1;
+
+		$data['json'] = $this->letsjson();
+		$data['array'] = $this->letsarray();
 		if($data['imagedata'] != 'false')
 			$this->load->view("/images", $data);
 		else
@@ -426,11 +430,12 @@ class site extends CI_Controller
 		$data['temp3'] = $_POST['consumertypetags'];
 		$data['temp4'] = $_POST['manualtags'];
 		$data['id'] = $_POST['imageid'];
+		$data['url'] = $_POST['imageurl'];
+		$data['status'] = $_POST['status'];
 
 		$data['info'] = $this->enterprisesmodel->updatethisimage($data);
 	}
-        
-        public function makemenu()
+	public function makemenu()
 	{
 		$this->load->model("enterprisesmodel");
 		$this->load->library('session');
@@ -439,13 +444,12 @@ class site extends CI_Controller
 		$menuPanelsArray=$this->enterprisesmodel->getAllPanelsByRole($sessionUserData['user_role_id']);
 
 		$stack = array();
-		$menu = array();
 		$tos = -1;
 		$stack[++$tos] = "0";
 		$count = 0;
 
 		$outer = 0;
-		$inner = 0;
+		$inner = -1;
 		$level = 0;
 
 		while($count != count($menuPanelsArray)-1)
@@ -462,7 +466,9 @@ class site extends CI_Controller
               		$menuPanelsArray[$i]['panel_parent_id'] = -1;
               		$flag = 1;
               		$count++;	
-              		$temp[$outer][$inner++] = $menuPanelsArray[$i]['panel_name'];
+              		$tempmenu[$outer][++$inner] = $menuPanelsArray[$i]['panel_name'];
+              		$tempurl[$outer][$inner] = $menuPanelsArray[$i]['panel_url'];
+              		$tempicon[$outer][$inner] = $menuPanelsArray[$i]['panel_icon'];
               		break;	
               	}
 			}
@@ -474,38 +480,43 @@ class site extends CI_Controller
              	if($level == 0)
              	{
              		++$outer;
-             		$inner = 0;
+             		$inner = -1;
              	}
             }
         }
-        $topmenu = array();
-        $menu = array();
-        $submenu = array();
-        $i = -1;
-        foreach($temp as $category)
+        $menu = array();        
+        for($i=0;$i<count($tempmenu); $i++)
         {
-        	$flag = 1;
-        	$j = 0;
-        	foreach($category as $level)
+    		$menu[$i]['menu'] = $tempmenu[$i][0];
+    		$menu[$i]['url'] = $tempurl[$i][0];
+    		$menu[$i]['icon'] = $tempicon[$i][0]; 
+    		$submenu = array();
+    		for($j=1;$j<(count($tempmenu[$i]));$j++)
         	{
-        		if($flag)
-        		{
-        			$menu = $level;
-        			$flag = 0;
-        		}
-        		else
-        			$submenu[$j++] = $level;
-        	}
-        	$topmenu[++$i]['menu'] = $menu;
-        	$topmenu[$i]['submenu'] = $submenu;
-        }
-        $json = json_encode($topmenu);
-//        $data = substr($json, 1, -1);
-//        var_dump($json);
-//        $data = rtrim($json,"]");
-//        var_dump($data);
+        		$submenu[$j-1]['submenu'] = $tempmenu[$i][$j];
+    			$submenu[$j-1]['suburl'] = $tempurl[$i][$j];
+    			//$submenu[$j-1]['subicon'] = $tempicon[$i][$j]; -> remove the comment when submenu gets its icon.
+    		}
+    		$menu[$i]['submenu'] = $submenu;
+    	}
+        $json = json_encode($menu);
         print_r($json);
-//        return $json;
     }
-        
+
+    public function deleteimages($url)
+    {
+    	$this->load->model("enterprisesmodel");
+
+    	$imageid = array();
+    	$count = 0;
+    	foreach($_POST as $image)
+    		$imageid[$count++] = $image;
+
+    	$this->enterprisesmodel->deleteimages($imageid);
+
+    	if($url == "displayimages")
+    		$this->displayimages(1);
+    	else
+    		$this->$url;
+    }
 }

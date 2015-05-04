@@ -7,7 +7,7 @@ function validateLogin()
 
     var atpos = username.indexOf("@");
     var dotpos = username.lastIndexOf(".");
-    if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= username.length)
+    if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= username.length) 
     {
         $('.signup-character-face-oops').css('display', 'block');
         $('.signup-character-face-happy').css('display', 'none');
@@ -386,73 +386,73 @@ function addpanel()
         return false;
     }
     else
-    {
-        var datastring = 'panelname=' + panelname + '&panelurl=/' + panelurl + '&paneldesc=' + paneldesc + '&type=' + type + '&parent=' + parent;
-        var url = '/addedpanel';
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: datastring,
-            success: function (responseText)
-            {
-                try
-                {
-                    alert(responseText);
-                }
-                catch (e)
-                {
+	{
+		var datastring = 'panelname=' + panelname + '&panelurl=/' + panelurl + '&paneldesc=' + paneldesc + '&type=' + type + '&parent=' + parent;
+      	var url = '/addedpanel';
+      	$.ajax({ 
+	     type   : "POST", 
+	     url    : url, 
+	     data   : datastring,   
+	     success: function(responseText)
+	     { 
+	    	 try
+	    	 {
+	    		
+	    	 }
+	    	 catch(e)
+	    	 {
+	    		 
+	    	 }
+	     }});
+      }
+   }
 
-                }
-            }});
-    }
-}
+   function deletepanel()
+   {
+   		var index = document.getElementById("panelid");
+    	var panel = index.options[index.selectedIndex].value;
+    	var datastring = 'panel=' + panel;
+    	var url = '/deletedpanel';
+    	$.ajax({ 
+	     type   : "POST", 
+	     url    : url, 
+	     data   : datastring,   
+	     success: function(responseText)
+	     { 
+	    	 try
+	    	 {
+	    	 	
+	       	 }
+	    	 catch(e)
+	    	 {
+	    		 
+	    	 }
+	     }});
+   }
 
-function deletepanel()
-{
-    var index = document.getElementById("panelid");
-    var panel = index.options[index.selectedIndex].value;
-    var datastring = 'panel=' + panel;
-    var url = '/deletedpanel';
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: datastring,
-        success: function (responseText)
-        {
-            try
-            {
-                alert(responseText);
-            }
-            catch (e)
-            {
-
-            }
-        }});
-}
-
-function editpanel()
-{
-    var index = document.getElementById("panelid");
-    var panel = index.options[index.selectedIndex].value;
-    var datastring = 'panel=' + panel;
-    var url = '/editthispanel';
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: datastring,
-        success: function (responseText)
-        {
-            try
-            {
-                document.forms['editpanelform'].action = '/editthispanel';
-                document.forms['editpanelform'].submit();
-            }
-            catch (e)
-            {
-
-            }
-        }});
-}
+   function editpanel()
+   {
+   		var index = document.getElementById("panelid");
+    	var panel = index.options[index.selectedIndex].value;
+    	var datastring = 'panel=' + panel;
+    	var url = '/editthispanel';
+    	$.ajax({ 
+	     type   : "POST", 
+	     url    : url, 
+	     data   : datastring,   
+	     success: function(responseText)
+	     { 
+	    	 try
+	    	 {
+	    	 	document.forms['editpanelform'].action='/editthispanel';
+	    	 	document.forms['editpanelform'].submit();
+	       	 }
+	    	 catch(e)
+	    	 {
+	    		 
+	    	 }
+	     }});
+   }
 
 function updatepanel()
 {
@@ -474,24 +474,30 @@ function updatepanel()
     }
     else
     {
-        var datastring = 'panelid=' + panelid + '&panelname=' + panelname + '&panelurl=' + panelurl + '&paneldesc=' + paneldesc + '&type=' + type + '&parent=' + parent;
-        var url = '/updatepanel';
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: datastring,
-            success: function (responseText)
-            {
-                try
-                {
-                    alert(responseText);
-                }
-                catch (e)
-                {
 
-                }
-            }});
+       	alert("Panel name cannot be empty.");
+       	return false;
     }
+   	else
+   	{
+   		var datastring = 'panelid='+panelid+'&panelname='+panelname+'&panelurl='+panelurl+'&paneldesc='+paneldesc+'&type='+type+'&parent='+parent; 
+         	var url = '/updatepanel';
+         	$.ajax({ 
+   	     type   : "POST", 
+   	     url    : url, 
+   	     data   : datastring,   
+   	     success: function(responseText)
+   	     { 
+   	    	 try
+   	    	 {
+   	    	
+   	    	 }
+   	    	 catch(e)
+   	    	 {
+   	    		 
+   	    	 }
+   	     }});
+   	}
 }
 
 function editrole()
@@ -758,4 +764,172 @@ $(document).ready(function () {
 });
 
 
+   function deleterole()
+   {
+   		var index = document.getElementById("roleid");
+    	var role = index.options[index.selectedIndex].value;
+    	var datastring = 'role=' + role;
+    	var url = '/deletedrole';
+    	$.ajax({ 
+	     type   : "POST", 
+	     url    : url, 
+	     data   : datastring,   
+	     success: function(responseText)
+	     { 
+	    	 try
+	    	 {
+	    	 	
+	       	 }
+	    	 catch(e)
+	    	 {
+	    		 
+	    	 }
+	     }});
+   }
 
+   function updateimages()
+   {
+      	
+      	var tag;
+   		
+   		tag = document.getElementById('tag').value;
+   	    
+   		if(tag == '')
+       	{
+       		alert("Please select a role.");
+       		return false;
+       	}
+        document.forms['gettagform'].action='/updateimagesfromtag';
+   		document.forms['gettagform'].submit();
+   }
+
+   function search()
+   {
+   		var date = document.getElementById('date').value;
+   		var tag = document.getElementById('tag').value;
+   		var index = document.getElementById("source");
+    	var source = index.options[index.selectedIndex].value;
+
+   		length=document.getElementById('categories').length;
+   	 	categories=document.getElementById('categories');
+   	 	var categorietags = "";
+   	 	for(i=0; i<length; i++)
+   	 		if(categories[i].selected)
+   	 			categorietags += categories[i].text + ', ';
+   	 	
+   	 	length=document.getElementById('subcategories').length;
+   	 	subcategories=document.getElementById('subcategories');
+   	 	subcategorietags = "";
+   	 	for(i=0; i<length; i++)
+   	 		if(subcategories[i].selected)
+   	 			subcategorietags += subcategories[i].text + ', ';
+
+		document.forms['searchform'].action='/getimages/1';
+   		document.forms['searchform'].submit();
+   }
+
+   function getinfo(url, page)
+   {
+   		if(url == 'getimages')
+   		{
+   			var date = document.getElementById('date').value;
+   			var tag = document.getElementById('tag').value;
+   			var source = document.getElementById('source').value;
+   		}
+
+   		var redirect = "/" + url + "/" + page;
+   		
+   		document.forms['infoform'].action=redirect;
+   		document.forms['infoform'].submit(); 		
+   }
+
+   function updatesubcat()
+   {
+      	json = document.getElementById('json').value;
+   		obj = JSON.parse(json);
+
+   	 	length=document.getElementById('categories').length;
+   	 	categories=document.getElementById('categories');
+   		
+   	 	var str = [];
+   	 	temp ='<select id="subcategories" name="subcategories[]" multiple="multiple">';
+   	 	inner = -1;
+   	 	subcategories=document.getElementById('subs');
+   	 	for(i=0; i<length; i++)
+   	 	{	
+   	 		if(categories[i].selected)
+   	 		{
+   	 			if(obj.hum_menu_list[i].subcategories)
+   	 			{
+   	 				var subcatlength = obj.hum_menu_list[i].subcategories.length;
+   	 				for(count=0; count<subcatlength; count++)
+   	 				{
+   	 					str[++inner] = obj.hum_menu_list[i].subcategories[count].name;
+   	 					
+   	 					value = str[inner];
+   	 					value = value.toLowerCase();
+   	 					value = value.replace(" ", "_");
+
+   	 					temp += '<option value="' + value + '">' + str[inner] +'</option>';
+   	 				}
+   	 			}
+			}
+		}
+		temp += '</select>';
+		subcategories.innerHTML = temp;
+   }
+
+   function updatethisimage()
+   {
+   		imageurl = document.getElementById('imageurl').value;
+
+   		var status = 'inactive';
+		if(document.getElementById("optionsRadios1").checked)
+			status = 'active';
+
+   		imageid=document.getElementById('imageid').value;
+   		length=document.getElementById('categories').length;
+   	 	categories=document.getElementById('categories');
+   	 	categorietags = "";
+   	 	for(i=0; i<length; i++)
+   	 		if(categories[i].selected)
+   	 			categorietags += categories[i].value + ', ';
+
+   	 	subcategorietags = "";
+   	 	if(document.getElementById('subcategories'))
+   	 	{
+		 	length=document.getElementById('subcategories').length;
+		 	subcategories=document.getElementById('subcategories');
+		 	subcategorietags = "";
+		 	for(i=0; i<length; i++)
+		 		if(subcategories[i].selected)
+		 			subcategorietags += subcategories[i].value + ', ';
+   	 	}
+   	 	length=document.getElementById('consumertype').length;
+   	 	consumertype=document.getElementById('consumertype');
+   	 	consumertypetags = "";
+   	 	for(i=0; i<length; i++)
+   	 		if(consumertype[i].selected)
+   	 			consumertypetags += consumertype[i].value + ', ';
+
+   		manualtags = document.getElementById('manualtags').value;
+
+   		var datastring = 'status='+status+'&imageurl='+imageurl+'&imageid='+imageid+'&categorytags='+categorietags+'&subcategorytags='+subcategorietags+'&consumertypetags='+consumertypetags+'&manualtags='+manualtags;
+      	var url = '/updatethisimage';
+      	$.ajax({ 
+	     type   : "POST", 
+	     url    : url, 
+	     data   : datastring,   
+	     success: function(responseText)
+	     {
+	     	alert(responseText);
+	     }});
+   }
+
+   function deleteimages()
+   {
+   		url = document.getElementById('url').value;
+   		
+   		document.forms['deleteimageform'].action='/deleteimages/'+url;
+   		document.forms['deleteimageform'].submit();
+   }
