@@ -445,13 +445,13 @@ class site extends CI_Controller
 		$menuPanelsArray=$this->enterprisesmodel->getAllPanelsByRole($sessionUserData['user_role_id']);
 
 		$stack = array();
-		$menu = array();
+
 		$tos = -1;
 		$stack[++$tos] = "0";
 		$count = 0;
 
 		$outer = 0;
-		$inner = 0;
+		$inner = -1;
 		$level = 0;
 
 		while($count != count($menuPanelsArray)-1)
@@ -468,7 +468,9 @@ class site extends CI_Controller
               		$menuPanelsArray[$i]['panel_parent_id'] = -1;
               		$flag = 1;
               		$count++;	
-              		$temp[$outer][$inner++] = $menuPanelsArray[$i]['panel_name'].','.$menuPanelsArray[$i]['panel_url'];
+              		$tempmenu[$outer][++$inner] = $menuPanelsArray[$i]['panel_name'];
+              		$tempurl[$outer][$inner] = $menuPanelsArray[$i]['panel_url'];
+              		$tempicon[$outer][$inner] = $menuPanelsArray[$i]['panel_icon'];
               		break;	
               	}
 			}
@@ -480,33 +482,26 @@ class site extends CI_Controller
              	if($level == 0)
              	{
              		++$outer;
-             		$inner = 0;
+             		$inner = -1;
              	}
             }
         }
-        $topmenu = array();
-        $menu = array();
-        $submenu = array();
-        $i = -1;
-        foreach($temp as $category)
+        $menu = array();        
+        for($i=0;$i<count($tempmenu); $i++)
         {
-        	$flag = 1;
-        	$j = 0;
-        	foreach($category as $level)
+    		$menu[$i]['menu'] = $tempmenu[$i][0];
+    		$menu[$i]['url'] = $tempurl[$i][0];
+    		$menu[$i]['icon'] = $tempicon[$i][0]; 
+    		$submenu = array();
+    		for($j=1;$j<(count($tempmenu[$i]));$j++)
         	{
-        		if($flag)
-        		{
-        			$menu = $level;
-        			$flag = 0;
-        		}
-        		else
-        			$submenu[$j++] = $level;
-        	}
-        	$topmenu[++$i]['menu'] = $menu;
-        	$topmenu[$i]['submenu'] = $submenu;
-        }
-        print_r($topmenu);
-        $json = json_encode($topmenu);
+        		$submenu[$j-1]['submenu'] = $tempmenu[$i][$j];
+    			$submenu[$j-1]['suburl'] = $tempurl[$i][$j];
+    			//$submenu[$j-1]['subicon'] = $tempicon[$i][$j]; -> remove the comment when submenu gets its icon.
+    		}
+    		$menu[$i]['submenu'] = $submenu;
+    	}
+        $json = json_encode($menu);
         print_r($json);
     }
 

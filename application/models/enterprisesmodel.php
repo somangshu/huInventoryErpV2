@@ -55,7 +55,7 @@ class Enterprisesmodel extends CI_Model
     {
     	$dbHandle = $this->init();
     	
-    	$query = "SELECT a.roleid,a.rolename,b.panel_id,b.panel_name,b.panel_url,b.panel_description,b.panel_parent_id,b.panel_type FROM roles a,panels b,role_panel_mapping c WHERE a.roleid='".$role_id."' AND b.panel_type='display'
+    	$query = "SELECT a.roleid,a.rolename,b.panel_id,b.panel_name,b.panel_url,b.panel_description,b.panel_parent_id,b.panel_type,b.panel_icon FROM roles a,panels b,role_panel_mapping c WHERE a.roleid='".$role_id."' AND b.panel_type='display'
 				  AND a.roleid=c.roleid and b.panel_id=c.panel_id Order by panel_id ASC";
     	error_log("Query is ".$query);
     	
@@ -888,6 +888,8 @@ public function deleterole($roleid)
     {
     	$dbHandle = $this->init();
 
+    	$data = array();
+
     	$sub = strrchr($data['temp1'], ",");
 		$data['temp1'] = trim($data['temp1'], $sub);
 		$categorytags = explode(', ', $data['temp1']);
@@ -910,6 +912,8 @@ public function deleterole($roleid)
 		$parent_id;
 		
 		$flag = 1;
+		$limit = 50;
+
 		foreach($consumertypetags as $type)
     	{
     		if($type != "")
@@ -921,7 +925,7 @@ public function deleterole($roleid)
     			$result = mysql_query($query);
 			    $row = mysql_fetch_assoc($result);
 			    $count = $row["COUNT(`imageid`)"];
-			    if($count < 50)
+			    if($count < $limit)
 			    {
     				$query = "INSERT INTO consumertype (imageid, type) VALUES (".$imageid." ,'".$type."');";
 	    			$result = mysql_query($query);
@@ -935,26 +939,38 @@ public function deleterole($roleid)
     			$result = mysql_query($query);
 			    $row = mysql_fetch_assoc($result);
 			    $count = $row["COUNT(`id`)"];
-			    if($count < 50)
+			    
+			    if($count < $limit)
 			    {
 			    	if($flag)
 			    	{
+				    	$data['url'] = $url;
+				    	$data['status'] = $status;
 				    	$query = "INSERT INTO magento_main_table (image_url, status) VALUES ('".$url."' ,'".$status."');";
-		    			$result = mysql_query($query);
-		    			
+		    			$result = mysql_query($query);	
+		    			$this->POSTCurl('INSERT', 'magento_main_table', $data);
+
+		    			$data = array();
+		    			$data['url'] = $url;
 				    	$query = 'SELECT id FROM magento_main_table WHERE image_url LIKE "'.$url.'"';
 				    	$result = mysql_query($query);
 						$row = mysql_fetch_assoc($result);
 						$parent_id = $row['id'];
+						$this->POSTCurl('SELECT', 'magento_main_table', $data);
 
 						$flag = 0;
 					}
 					
+					$data = array();
+		    		$data['parent_id'] = $parent_id;
+		    		$data['type'] = $type;
 					$query = 'DELETE FROM magento_consumer_type_mapping WHERE parent_id = '.$parent_id.' AND consumer_type LIKE "'.$type.'";';
 					$result = mysql_query($query);
+					$this->POSTCurl('DELETE', 'magento_consumer_type_mapping', $data);
 
     				$query = "INSERT INTO magento_consumer_type_mapping (parent_id, consumer_type) VALUES (".$parent_id." ,'".$type."');";
 	    			$result = mysql_query($query);
+	    			$this->POSTCurl('INSERT', 'magento_consumer_type_mapping', $data);
 	    		}
 	    		else
 	    		{
@@ -970,8 +986,12 @@ public function deleterole($roleid)
     			$query = "INSERT INTO manualcategorytags (imageid, tag) VALUES (".$imageid." ,'".$tag."');";
 	    		$result = mysql_query($query);
 
+	    		$data = array();
+		    	$data['parent_id'] = $parent_id;
+		    	$data['tag'] = $tag;
 	    		$query = "INSERT INTO magento_insta_product_tags (parent_id, catalog_tag) VALUES (".$parent_id." ,'".$tag."');";
 	    		$result = mysql_query($query);
+	    		$this->POSTCurl('INSERT', 'magento_insta_product_tags', $data);
     		}
     	}
 
@@ -982,8 +1002,12 @@ public function deleterole($roleid)
     			$query = "INSERT INTO manualcategorytags (imageid, tag) VALUES (".$imageid." ,'".$tag."');";
 	    		$result = mysql_query($query);
 
+	    		$data = array();
+		    	$data['parent_id'] = $parent_id;
+		    	$data['tag'] = $tag;
 	    		$query = "INSERT INTO magento_insta_product_tags (parent_id, catalog_tag) VALUES (".$parent_id." ,'".$tag."');";
 	    		$result = mysql_query($query);
+	    		$this->POSTCurl('INSERT', 'magento_insta_product_tags', $data);
     		}
     	}
     	
@@ -994,17 +1018,21 @@ public function deleterole($roleid)
     			$query = "INSERT INTO manualcategorytags (imageid, tag) VALUES (".$imageid." ,'".$tag."');";
 	    		$result = mysql_query($query);
 
+	    		$data = array();
+		    	$data['parent_id'] = $parent_id;
+		    	$data['tag'] = $tag;
 	    		$query = "INSERT INTO magento_insta_product_tags (parent_id, catalog_tag) VALUES (".$parent_id." ,'".$tag."');";
 	    		$result = mysql_query($query);
+	    		$this->POSTCurl('INSERT', 'magento_insta_product_tags', $data);
     		}
     	}
 
-    	$query = 'UPDATE statustable SET status = "'.$status.'" WHERE imageid = '.$imageid; 
-		$result = mysql_query($query);
-
-
+    	$data = array();
+    	$data['status'] = $status;
+    	$data['url'] = $url;
      	$query = 'UPDATE magento_main_table SET status = "'.$status.'" WHERE image_url = "'.$url.'"'; 
 		$result = mysql_query($query);
+		$this->POSTCurl('UPDATE', 'magento_main_table', $data);
 
 		echo 'Updated!';
     }
@@ -1018,5 +1046,23 @@ public function deleterole($roleid)
     		$query = 'UPDATE statustable SET status = "inactive" WHERE imageid = '.$image; 
      		$result = $dbHandle->query($query);
     	}
+    }
+
+    public function POSTCurl($type, $table, $data)
+    {
+    	$json = json_encode($data);
+
+    	$curl = curl_init();
+    	curl_setopt_array($curl, array(
+	    							CURLOPT_RETURNTRANSFER => 1,
+								    CURLOPT_URL => '#',//as supplied by Sam
+								    CURLOPT_POST => 1,
+								    CURLOPT_POSTFIELDS => array(
+													        queryType => $type,
+													        tableName => $table,
+													        data => $json								    )
+						));
+		$resp = curl_exec($curl);
+		curl_close($curl);
     }
 }//EOF
