@@ -165,7 +165,10 @@ body{
 }
 
 .logo{
-    display:inline-block;
+    position: absolute;
+   top: 9px;
+  left: 19px;
+  width: 100px;
 }
 
 .formstyle{
