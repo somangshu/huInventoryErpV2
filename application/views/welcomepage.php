@@ -1,7 +1,7 @@
 <?php 
 	$this->load->view('/common/menu'); 
 ?> 
-<div class="well well-lg" style="width: 31%;margin:-45% 0 0% 45% !important;;text-align: center;">
+<div class="well well-lg">
     <h1>Welcome <span style="font-size: .5em;vertical-align: middle;"><?php 
 			if (isset($sessionUserData['user_name']))
 			{ 

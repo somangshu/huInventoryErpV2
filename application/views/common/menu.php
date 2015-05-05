@@ -1,5 +1,5 @@
 <!DOCTYPE>
-<html>
+<html ng-app="starterApp">
     <head>
         <meta charset="UTF-8">
         <title> Home Page </title>
@@ -14,80 +14,13 @@
         <link rel="stylesheet" href="/public/css/app.css"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
-    <!--<body>                         
-    <div id="cssmenu" class="bs-component" >
-    <div class="navbar navbar-default">
-    <div class="container">  
-     <div class="navbar-header">
-                                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-                                            <span class="icon-bar"></span>
-                                            <span class="icon-bar"></span>
-                                            <span class="icon-bar"></span>
-                                        </button>
-                                        <a href="/" style="padding: 0px !important;"><span class="navbar-brand logo"><img src="public/images/logo.png"></span></a>
-    <?php
-    $stack[100] = array();
-    $tos = -1;
-    $stack[++$tos] = "0";
-    $count = 0;
-    ?>
-                                    </div>
-    
-      <div class="navbar-collapse collapse navbar-responsive-collapse">
-            <ul>
-    <?php
-    while ($count != count($menuPanelsArray) - 1) {
-        $flag = 0;
-        for ($i = 0; $i <= count($menuPanelsArray) - 1; $i++) {
-            if ($menuPanelsArray[$i]['panel_parent_id'] != $stack[$tos])
-                continue;
-            else {
-                $stack[++$tos] = $menuPanelsArray[$i]['panel_id'];
-                $menuPanelsArray[$i]['panel_parent_id'] = -1;
-                $flag = 1;
-                $count++;
-                ?>
-                                
-                                <li class=''><a class="current" href="<?php echo $menuPanelsArray[$i]['panel_url']; ?>"
-                                        title="<?php echo $menuPanelsArray[$i]['panel_name']; ?>"><?php echo $menuPanelsArray[$i]['panel_name']; ?>
-                                </a>
-                                        <ul>
-            <?php
-            break;
-        }
-    }
-    if (!$flag) {
-        --$tos;
-        ?>
-                                    </ul>
-                            </li>
-            <?php
-        }
-    }
-    ?>
-                    </ul>
-            </ul>
-                    <li>
-                    <a class="current" href="#"><?php
-    if (isset($sessionUserData['user_name'])) {
-        echo $sessionUserData['user_name'];
-    }
-    ?>
-    
-                                    </a><ul><li style="width: 135px;"><a class="current" href="/logout">Logout</a></li></ul>
-                    </li>
-                    </div>
-    
-                    </div>
-    </div>
-    </div>-->
-    <body ng-app="starterApp" layout="column">
-        <div ng-controller = "UserController as ul">
+
+    <body ng-controller = "UserController as ul" layout="column">
             <md-toolbar layout="row">
                 <md-button class="menu" hide-gt-sm ng-click="ul.toggleList()" aria-label="Show User List">
                     <md-icon md-svg-icon="menu" ></md-icon>
                 </md-button>
-                <a class="current" href="#">
+                <a class="current" href="http://www.hu.com">
                     <img class="logo" src="public/images/logo.png" alt="Happily Unmarried" title="Happily Unmarried" />
                 </a>
                 <a class="current" href="/logout">
@@ -105,19 +38,20 @@
                                 <md-button ng-click="ul.selectUser(it); active = !active" ng-class="{'selected' : it === ul.selected }">
                                     <md-icon md-svg-icon="{{it.icon}}" class="avatar"></md-icon>
                                     {{it.menu}}
-                                    </md-button>
+                                </md-button>
                                 <div class="slideDown" ng-hide="active">
                                     <ul class="expand-collapse-content">
                                         <md-button ng-repeat="subs in it.submenu" ng-href="{{subs.suburl}}" style="display: inline-block;"> 
-                                                <li style="color: rgba(0, 0, 0, 0.6) !important;">{{subs.submenu}}</li>
-                                            </md-button>
+                                            <li style="color: rgba(0, 0, 0, 0.6) !important;">{{subs.submenu}}</li>
+                                        </md-button>
                                     </ul>
                                 </div>
                             </md-item></div>
                     </md-list>
                 </md-sidenav>
-            </div>
-        </div>
+                <div layout="column" flex class="content-wrapper" id="primary-col">
+            <md-content layout="column" flex class="md-padding">
+                
         <script src="/public/js/angular.js"></script>
         <script src="/public/js/angular-animate.js"></script>
         <script src="/public/js/angular-aria.js"></script>
@@ -139,9 +73,9 @@
         <script type="text/javascript" src = "/public/js/default.js"></script>
 
         <script>
-                                $(document).ready(function() {
-                        $.material.init();
-                        });        </script>
+                                                        $(document).ready(function() {
+                                                $.material.init();
+                                                });</script>
 
         <script type="text/javascript">
 

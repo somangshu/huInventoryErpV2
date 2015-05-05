@@ -175,6 +175,12 @@ body{
     padding-top: 15px !important;
 }
 
+.well{
+    width: 40%;
+    margin: 7% 0 0% 22% !important;
+    text-align: center;
+}
+
 /* styles by kaustav */
 
 /* navbar section */
