@@ -84,6 +84,8 @@ $route['getcatalog'] = "site/letscurl";
 $route['updatethisimage'] = "site/updatethisimage";
 $route['makemenu'] = "site/makemenu";
 $route['deleteimages/(:any)'] = "site/deleteimages/$1";
+$route['addicons'] = "welcome/addicons";
+$route['geticons'] = "welcome/geticons";
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
