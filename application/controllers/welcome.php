@@ -716,6 +716,46 @@ public function deletedrole()
 	$this->load->model('enterprisesmodel');
 	$this->enterprisesmodel->deleterole($_POST['role']);
 }
+//Ganesh
+public function addicons(){
+    //implementation to add icons
+       $this->load->model('enterprisesmodel');
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL,"http://www.happily.com/api/store/categorylist?secretkey=XmgobA7HyvrBLhjI74o5pqec2fDFSf4TWzmIhSYnkNU");
+        curl_setopt($ch, CURLOPT_HTTPGET, 1);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        $categoryList = curl_exec ($ch);
+        curl_close ($ch);
+        $categoryListNew=  json_decode($categoryList); 
+        
+        foreach ($categoryListNew->data as $value) { 
+            $id=$value->id; 
+            $nameIdArray[] = array( "name"=>$value->name,"parentid"=>'0',"entity_id"=>$id);
+            if(!empty($value->subcategories)){
+                foreach($value->subcategories as $sub) {
+                    $subNameIdArray[]=array("name"=>$sub->name,"id"=>$id,"entity_id"=>$sub->id);
+                }
+            }
+        }
+        //        print_r($nameIdArray);
+//        die();
+        foreach ($nameIdArray as $values) {
+            //echo 'name   :'.$values['name'].'<br>';
+            $displayData['iconArray']=$this->enterprisesmodel->addicons($values['name'],0,$values['entity_id']);
+        }
+        foreach ($subNameIdArray as $valuesSub) {
+           
+            $displayData['subIconArray']=$this->enterprisesmodel->addicons($valuesSub['name'],$valuesSub['id'],$valuesSub['entity_id']);
+        }
+        
+        
+		}
+public function geticons(){
+    $this->load->model('enterprisesmodel');
+    //add code
+    $displayData['iconsArray']=$this->enterprisesmodel->geticons();
+        echo json_encode($displayData);
+    }
 }
 //changes
 
