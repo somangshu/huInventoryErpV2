@@ -280,6 +280,27 @@ class Enterprisesmodel extends CI_Model
     	 
     	return $childpanels;
     }
+    
+    public function addicons($name,$parentId,$entity_id){
+    $dbHandle = $this->init();
+     //select name and parentId from table and store in array
+    $query="SELECT name,parentId FROM menu_magento_icon WHERE name='".$name."' AND entity_id='".$entity_id."';";
+    $result = mysql_query($query);
+    if(mysql_num_rows($result)<= 0){
+        //echo 'key does not exists';
+        $queryin = "INSERT INTO menu_magento_icon(name, parentId,entity_id) VALUES ('".$name."','".$parentId."','".$entity_id."')";                 
+        $resultin = mysql_query($queryin) or die(mysql_error()); 
+        if($resultin){
+           return "success";  
+        }else{
+            return "fail";
+        }
+
+        }else{
+            return "already exist";
+        } 
+             
+    }
 
 //------------------USERS-------------------------------------------
 
@@ -353,9 +374,30 @@ public function getAllPanels()
 	return $panelsArray;
 }
 
+public function geticons(){
+            $dbHandle = $this->init();
+        //icon url,parentId ,name  
+	$query = "SELECT name,entity_id,id,iconmdpi_active,iconhdpi_active,iconxhdpi_active,iconxxhdpi_active,iconxxxhdpi_active,iconmdpi_inactive,iconhdpi_inactive,iconxhdpi_inactive,iconxxhdpi_inactive,iconxxxhdpi_inactive,parentId FROM menu_magento_icon";
+        $result = mysql_query($query) or die(mysql_error());
+        $i=0;
+        $panelsArray = array();
+        if ($result) {
+            while($row=mysql_fetch_assoc($result)){
+               $panelsArray[$i] = $row;
+               	$i++; 
+            }
+            }
+            
+           return $panelsArray ;
+        //
+        //$queryResultArray = mysql_fetch_assoc($result);
+        //iterate through array
+       // echo 'result is  :'.json_encode($queryResultArray).'<br>';
+        //add code ?????/
+    }
+    
 
-
-public function getMainPanels($panel_status){
+    public function getMainPanels($panel_status){
 	$dbHandle = $this->init();
 	$query = "SELECT * FROM panel_tbl where panel_parent_id=0";
 	if($panel_status!='0'){
@@ -1047,7 +1089,6 @@ public function deleterole($roleid)
      		$result = $dbHandle->query($query);
     	}
     }
-
     public function POSTCurl($type, $table, $data)
     {
     	$json = json_encode($data);
