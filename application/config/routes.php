@@ -82,6 +82,8 @@ $route['imageinfo/(:any)'] = "site/imageinfo/$1";
 $route['vidisha'] = "site/vidisha";
 $route['getcatalog'] = "site/letscurl";
 $route['updatethisimage'] = "site/updatethisimage";
+$route['addicons'] = "welcome/addicons";
+$route['geticons'] = "welcome/geticons";
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

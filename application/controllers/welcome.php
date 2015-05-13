@@ -716,9 +716,9 @@ public function deletedrole()
 	$this->load->model('enterprisesmodel');
 	$this->enterprisesmodel->deleterole($_POST['role']);
 }
-//Ganesh
+
 public function addicons(){
-    //implementation to add icons
+        //implementation to add icons
        $this->load->model('enterprisesmodel');
         $ch = curl_init();
         curl_setopt($ch,CURLOPT_URL,"http://www.happily.com/api/store/categorylist?secretkey=XmgobA7HyvrBLhjI74o5pqec2fDFSf4TWzmIhSYnkNU");
@@ -737,10 +737,7 @@ public function addicons(){
                 }
             }
         }
-        //        print_r($nameIdArray);
-//        die();
         foreach ($nameIdArray as $values) {
-            //echo 'name   :'.$values['name'].'<br>';
             $displayData['iconArray']=$this->enterprisesmodel->addicons($values['name'],0,$values['entity_id']);
         }
         foreach ($subNameIdArray as $valuesSub) {
@@ -752,8 +749,7 @@ public function addicons(){
 		}
 public function geticons(){
     $this->load->model('enterprisesmodel');
-    //add code
-    $displayData['iconsArray']=$this->enterprisesmodel->geticons();
+        $displayData['iconsArray']=$this->enterprisesmodel->geticons();
         echo json_encode($displayData);
     }
 }
