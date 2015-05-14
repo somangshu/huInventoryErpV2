@@ -36,19 +36,11 @@ class site extends CI_Controller
 		{
 			do 
 			{
-                            ///get values to insert
-//                            $test='testurl1';
-//                            $teststatus="active";
-				$tuple = "INSERT into insta_images (imageurl, likes, username, source, imageid, caption) VALUES";
-                                //('".$test."','".$test."','".$test."','".$test."','".$test."','".$test."') 
-                                $query1 = "INSERT into tags (imageid, tag) VALUES";
-                                //('".$test."','".$test."')
-                                $query2 = "INSERT into statustable (imageid, status) VALUES";
-                                //('".$teststatus."','".$teststatus."')
-                                $query3 = "INSERT into insta_users (username, profile) VALUES";
-                                //('".$test."','".$test."')
-                                
-				foreach( $media->data as $imagedata)
+                           $tuple = "INSERT into insta_images (imageurl, likes, username, source, imageid, caption) VALUES";
+                           $query1 = "INSERT into tags (imageid, tag) VALUES";
+                           $query2 = "INSERT into statustable (imageid, status) VALUES";
+                           $query3 = "INSERT into insta_users (username, profile) VALUES";
+                             foreach( $media->data as $imagedata)
 				{
                                         $flag = 0;
 					if(isset($imagedata->caption->id))
