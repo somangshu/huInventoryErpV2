@@ -21,7 +21,7 @@ class site extends CI_Controller
 		$tag = 'happilyunmarried';
 		
 		$media = $instagram->getTagMedia($tag, 20);
-		
+               
 		$result = 0;
 		$limit = 20;
 		$size = '320';
@@ -31,109 +31,131 @@ class site extends CI_Controller
 		$count = 0;
 
 		$imageids = $this->enterprisesmodel->getimageids();
-		
-		try 
+	
+                try 
 		{
 			do 
 			{
-				$tuple = 'INSERT into insta_images (imageurl, likes, username, source, imageid, caption) VALUES ';
-				$query1 = 'INSERT into tags (imageid, tag) VALUES ';
-				$query2 = 'INSERT into statustable (imageid, status) VALUES ';
-				$query3 = 'INSERT into insta_users (username, profile) VALUES ';
-				foreach(array_slice($media->data, 0, $limit) as $imagedata)
+                            ///get values to insert
+//                            $test='testurl1';
+//                            $teststatus="active";
+				$tuple = "INSERT into insta_images (imageurl, likes, username, source, imageid, caption) VALUES";
+                                //('".$test."','".$test."','".$test."','".$test."','".$test."','".$test."') 
+                                $query1 = "INSERT into tags (imageid, tag) VALUES";
+                                //('".$test."','".$test."')
+                                $query2 = "INSERT into statustable (imageid, status) VALUES";
+                                //('".$teststatus."','".$teststatus."')
+                                $query3 = "INSERT into insta_users (username, profile) VALUES";
+                                //('".$test."','".$test."')
+                                
+				foreach( $media->data as $imagedata)
 				{
-					$flag = 0;
-					if(!isset($imagedata->caption->id))
+                                        $flag = 0;
+					if(isset($imagedata->caption->id))
 					{	
-						echo $imagedata->images->standard_resolution->url;
-						continue;
-					} 
-
-        			$tuple .= "(";
-					$tuple .= '"'.$imagedata->images->standard_resolution->url.'"';
+                                        $tuple .= "(";
+                                        $tuple .= '"'.$imagedata->images->standard_resolution->url.'"';
 					$tuple .= ', "'.$imagedata->likes->count;
-					
-					if(isset($imagedata->caption->from->username))
-						$tuple .= '", "'.$imagedata->caption->from->username;
-					else 
-						$tuple .= '", "NO USERNAME FOUND';
+					} 
+                                         if(isset($imagedata->caption->from->username)){
+                                          $tuple .= '", "'.$imagedata->caption->from->username;
+                                        }
+					else {
+                                        $tuple .= '", "NO USERNAME FOUND';
+                                        }
 					
 					$tuple .= '", "web"';
-					$tuple .= ', "'.$imagedata->caption->id.'"';
-
+                                        if(isset($imagedata->caption->id)){
+                                       	$tuple .= ', "'.$imagedata->caption->id.'"';
+                                        }
+                                                
+                                        if(isset($imagedata->caption->text)){
 					$caption = mysql_real_escape_string($imagedata->caption->text);
 					$tuple .= ', "'.$caption.'"';
+                                        }
 					$tuple .= "), ";
-					
-					foreach($imagedata->tags as $tagname)
-					{
-
+                                        
+					if(isset($imagedata->tags)){
+                                            foreach($imagedata->tags as $tagname)
+					{ 
 						$query1 .= "(";
+                                                if(isset($imagedata->caption->id)){
 						$query1 .= '"'.$imagedata->caption->id.'"';
+                                                }
 						$query1 .= ', "'.$tagname.'"';
 						$query1 .= "), ";
 					}
-
+                                        }
+                                         
 					$query2 .= "(";
+                                         if(isset($imagedata->caption->id)){
 					$query2 .= '"'.$imagedata->caption->id.'"';
+                                         }
 					$query2 .= ', "active"';
 					$query2 .= "), ";
-
+                                        
+                                        if(isset($imagedata->caption->from->username)){
 					if(!in_array($imagedata->caption->from->username, $username))
-					{
-						$flag = 1;
-
+					{			
+                                            $flag = 1;
 						$query3 .= "(";
+                                                if(isset($imagedata->caption->from->username)){
 						$query3 .= '"'.$imagedata->caption->from->username.'"';
+                                                }
+                                                 if(isset($imagedata->caption->from->profile_picture)){
 						$query3 .= ', "'.$imagedata->caption->from->profile_picture.'"';
+                                                 }
 						$query3 .= "), ";
-
+                                                
 						$username[$count++] = $imagedata->caption->from->username;
 					}
+                                        }
 				}
 
 				$sub = strrchr($tuple, ",");
 				$tuple = trim($tuple, $sub);
 				$tuple .= ";";
+                                
 
 				$sub = strrchr($query1, ",");
 				$query1 = trim($query1, $sub);
 				$query1 .= ";";
-
+                                
 				$sub = strrchr($query2, ",");
 				$query2 = trim($query2, $sub);
 				$query2 .= ";";
-
+                                
 				$sub = strrchr($query3, ",");
 				$query3 = trim($query3, $sub);
 				$query3 .= ";";
-
+                                
 				$which = 0;
-
-				$result = $this->enterprisesmodel->insertInstagramImages($tuple);
-				if($result)
+                                 $result = $this->enterprisesmodel->insertInstagramImages($tuple);
+                                if($result==true)
 				{
-					$which = 1;
+                                    echo 'tuple success'.'<br>';
+					$which = $which+1;
 					$result = $this->enterprisesmodel->insertInstagramImages($query1);
 					if($result)
 					{
-						$which = 2;
+                                            echo 'query1 success'.'<br>';
+						$which = $which+1;
 						$result = $this->enterprisesmodel->insertInstagramImages($query2);
 						if($result && $flag)
 						{
-							$which = 3;
+                                                    echo 'query2 success'.'<br>';
+							$which = $which+1;
 							$result = $this->enterprisesmodel->insertInstagramImages($query3);
+                                                        echo 'query3 success'.'<br>';
 						}
 					}
 				}
-				
-				if(!$result)
+                                else
 				{
 					print_r("Error in insert to db. ".$which);
 				 	die();
 				}
-				
-				if(isset($media->pagination->next_max_id))
+                                if(isset($media->pagination->next_max_id))
 				{
 					$media = $instagram->pagination($media, $limit);
 				}

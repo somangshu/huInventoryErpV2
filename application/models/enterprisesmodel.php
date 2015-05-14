@@ -22,15 +22,15 @@ class Enterprisesmodel extends CI_Model
 	public function insertInstagramImages($query)
     {
         $dbHandle = $this->init();
-        
-        $result = mysql_query($query);
-       
-        if($result)
+         $result = mysql_query($query);
+        if($result==NULL)
         {
+            echo 'enterprise model insert InstagramImages has result '.'<br>';
             return 1;
         }
         else
         {
+            echo 'enterprise model insert InstagramImages does not has result'.'<br>' ;
             return 0;
         }
     }
@@ -287,7 +287,7 @@ class Enterprisesmodel extends CI_Model
     $query="SELECT name,parentId FROM menu_magento_icon WHERE name='".$name."' AND entity_id='".$entity_id."';";
     $result = mysql_query($query);
     if(mysql_num_rows($result)<= 0){
-        //echo 'key does not exists';
+            //echo 'key does not exists';
         $queryin = "INSERT INTO menu_magento_icon(name, parentId,entity_id) VALUES ('".$name."','".$parentId."','".$entity_id."')";                 
         $resultin = mysql_query($queryin) or die(mysql_error()); 
         if($resultin){
@@ -745,14 +745,11 @@ public function deleterole($roleid)
     public function getimageids()
     {
 		$dbHandle = $this->init();
-    	
-		$imageids = array();
+                $imageids = array();
 		$i = 0;
-
-		$query = "SELECT imageid FROM insta_images WHERE 1";
+                $query = "SELECT imageid FROM insta_images ";
 		$result = mysql_query($query);
-		
-		while($row = mysql_fetch_assoc($result))
+                while($row = mysql_fetch_assoc($result))
     	{
     		$imageids[$i] = $row['imageid'];
     		$i++;
