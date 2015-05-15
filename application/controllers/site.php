@@ -36,6 +36,7 @@ class site extends CI_Controller
 		{
 			do 
 			{
+                            //$test='test';
                            $tuple = "INSERT into insta_images (imageurl, likes, username, source, imageid, caption) VALUES";
                            $query1 = "INSERT into tags (imageid, tag) VALUES";
                            $query2 = "INSERT into statustable (imageid, status) VALUES";
@@ -144,7 +145,7 @@ class site extends CI_Controller
 				}
                                 else
 				{
-					print_r("Error in insert to db. ".$which);
+					print_r("Error in insert to db. ");
 				 	die();
 				}
                                 if(isset($media->pagination->next_max_id))
