@@ -3,13 +3,8 @@
 	if(isset($url))
 	{
 ?>
-<html lang="en">
-<head>
-	<title>
-		IMAGES
-	</title>
-</head>
-<body>
+
+
 	<input type="hidden" name="url" id="url" value="<?php echo $url; ?>">
 	<?php } ?>
 	<input type="hidden" id="json" name="json" value='<?php echo $json; ?>'>
@@ -239,7 +234,7 @@ if($flag)
 			echo '<input type="hidden" name="url" id="url" value="'.$url.'">';
 
 	}
-}
+//}
 ?>
 </div>
 <div class="col-sm-12">
@@ -262,5 +257,3 @@ if($flag)
 </div>
 </div>
 </form>
-</body>
-</html>

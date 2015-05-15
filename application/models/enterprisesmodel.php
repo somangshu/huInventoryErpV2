@@ -22,14 +22,19 @@ class Enterprisesmodel extends CI_Model
 	public function insertInstagramImages($query)
     {
         $dbHandle = $this->init();
-         $result = mysql_query($query);
+        echo '-----------result checkin'.'<br>';
+        echo 'query is   :'.$query.'<br>';
+         $result = mysql_query($query) or die(mysql_error());
+         echo '-----------result has rows'.'<br>';
         if($result==NULL)
         {
-            echo 'enterprise model insert InstagramImages has result '.'<br>';
+                echo 'enterprise model insert InstagramImages has result '.'<br>';
             return 1;
         }
         else
         {
+            echo '<br>';
+            echo 'query with no result is  :'.$query.'<br>'.'<br>'.'-----------';
             echo 'enterprise model insert InstagramImages does not has result'.'<br>' ;
             return 0;
         }
@@ -837,29 +842,28 @@ public function deleterole($roleid)
     	$start_from = ($page-1) * 20; 
 
     	$query = "SELECT imageurl, insta.imageid FROM insta_images insta, statustable WHERE insta.imageid = statustable.imageid AND statustable.status LIKE 'active' ORDER BY insta.imageid DESC LIMIT ".$start_from.", 20"; 
-    	$result = mysql_query($query);
-
-		$imageurl = array();
-
+    	
+        $result = mysql_query($query);
+        $imageurl = array();
+        
     	while ($row = mysql_fetch_assoc($result))
     	{
     		$image = $row['imageurl'];
-    		$imageids[$i] = $row['imageid'];
-			$imageurl[$i++] =  '<a href="/imageinfo/'.$row['imageid'].'"><img src="'.$image.'" alt="WTF" style="width:320px;height:320px"></a>';
-		}
+                $imageids[$i] = $row['imageid'];
+                $imageurl[$i++] =  '<a href="/imageinfo/'.$row['imageid'].'"><img src="'.$image.'" alt="WTF" style="width:320px;height:320px"></a>';
+        }
+                
 		$data['url'] = $imageurl;
 		$data['imageid'] = $imageids;
-
+                
     	$query = "SELECT COUNT(imageid) FROM insta_images"; 
     	$result = mysql_query($query); 
     	$row = mysql_fetch_row($result); 
-    	
     	$total_records = $row[0]; 
     	$total_pages = ceil($total_records / 20); 
     	
-		$data['totalpages'] = $total_pages;    
-
-    	return $data;
+		$data['totalpages'] = $total_pages;
+                return $data;
     }
 
     public function getImageInfo($id)
